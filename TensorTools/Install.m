@@ -4,7 +4,7 @@ InstallTensorTools::version="Warning: The package structure of `1` is only suppo
 InstallRGBeta[]:= Module[{
         pkgDir= FileNameJoin[{$UserBaseDirectory, "Applications", "TensorTools"}],
         pkgLink= "https://github.com/srossd/TensorTools/archive/main.zip",
-        pkgName= "RGBeta",
+        pkgName= "TensorTools",
         minVersion= 9.0,
         questionOverwrite, tmpFile, unzipDir, zipDir},
 
