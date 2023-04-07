@@ -49,7 +49,7 @@ InstallTensorTools[]:= Module[{
 	Print["Copying "<> pkgName<> " to "<> pkgDir<> "."];
 
 	zipDir= FileNames["TensorTools.m", unzipDir, Infinity];
-	CopyDirectory[DirectoryName[zipDir[[1]], 2], pkgDir];
+	CopyDirectory[DirectoryName[zipDir[[1]], 1], pkgDir];
 
 	(* Delete the extracted archive *)
 	Quiet@ DeleteDirectory[unzipDir, DeleteContents-> True];
