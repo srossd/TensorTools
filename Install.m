@@ -1,7 +1,7 @@
 InstallTensorTools::version="Warning: The package structure of `1` is only supported by Mathematica versions \[GreaterEqual] `2`. You are using Mathematica `3`.";
 
 
-InstallRGBeta[]:= Module[{
+InstallTensorTools[]:= Module[{
         pkgDir= FileNameJoin[{$UserBaseDirectory, "Applications", "TensorTools"}],
         pkgLink= "https://github.com/srossd/TensorTools/archive/main.zip",
         pkgName= "TensorTools",
@@ -14,7 +14,7 @@ InstallRGBeta[]:= Module[{
 
 	(* Check Mathematica version *)
 	If[$VersionNumber< minVersion,
-		Message[InstallRGBeta::version, pkgName, ToString@ minVersion, $VersionNumber];
+		Message[InstallTensorTools::version, pkgName, ToString@ minVersion, $VersionNumber];
 	];
 
 	(* Check if TensorTools has already been installed *)
