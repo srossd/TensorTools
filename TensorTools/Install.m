@@ -6,6 +6,7 @@ InstallTensorTools[]:= Module[{
         pkgLink= "https://github.com/srossd/TensorTools/archive/main.zip",
         pkgName= "TensorTools",
         minVersion= 9.0,
+        proceed = True,
         questionOverwrite, tmpFile, unzipDir, zipDir},
 
 
@@ -25,34 +26,36 @@ InstallTensorTools[]:= Module[{
                 WindowFloating-> True,
                 WindowTitle-> pkgName<> " installation detected"],
 			Quiet@ DeleteDirectory[pkgDir, DeleteContents-> True],
-			Abort[]
+			proceed = False
 		];
 	];
 
-	(* Download TensorTools *)
-	Print["Downloading "<> pkgName<> " from ", pkgLink<> "."];
-
-	tmpFile= Quiet@ URLSave[pkgLink];
-
-	If[tmpFile=== $Failed,
-		Print["Failed to download "<> pkgName<> ".\nInstallation aborted!"];
-		Abort[]
+	If[proceed,
+		(* Download TensorTools *)
+		Print["Downloading "<> pkgName<> " from ", pkgLink<> "."];
+	
+		tmpFile= Quiet@ URLSave[pkgLink];
+	
+		If[tmpFile=== $Failed,
+			Print["Failed to download "<> pkgName<> ".\nInstallation aborted!"];
+			Abort[]
+		];
+	
+		(* Unzip TensorTools file *)
+		Print["Extracting "<> pkgName<> " zip file."];
+	
+		unzipDir= tmpFile<>".dir";
+		ExtractArchive[tmpFile, unzipDir];
+	
+		(* Move files to the Mathematica packages folder *)
+		Print["Copying "<> pkgName<> " to "<> pkgDir<> "."];
+	
+		zipDir= FileNames["TensorTools.m", unzipDir, Infinity];
+		CopyDirectory[DirectoryName[zipDir[[1]], 1], pkgDir];
+	
+		(* Delete the extracted archive *)
+		Quiet@ DeleteDirectory[unzipDir, DeleteContents-> True];
 	];
-
-	(* Unzip TensorTools file *)
-	Print["Extracting "<> pkgName<> " zip file."];
-
-	unzipDir= tmpFile<>".dir";
-	ExtractArchive[tmpFile, unzipDir];
-
-	(* Move files to the Mathematica packages folder *)
-	Print["Copying "<> pkgName<> " to "<> pkgDir<> "."];
-
-	zipDir= FileNames["TensorTools.m", unzipDir, Infinity];
-	CopyDirectory[DirectoryName[zipDir[[1]], 1], pkgDir];
-
-	(* Delete the extracted archive *)
-	Quiet@ DeleteDirectory[unzipDir, DeleteContents-> True];
 	Print["Installation complete!"];
 ];
 
