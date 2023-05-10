@@ -276,5 +276,9 @@ Kronecker::usage = "Kronecker[\!\(\*
 StyleBox[\"idx\",\nFontSlant->\"Italic\"]\)] gives the Kronecker tensor with index type \!\(\*
 StyleBox[\"idx\",\nFontSlant->\"Italic\"]\).";
 
+KroneckerReduce::usage = "KroneckerReduce[\!\(\*
+StyleBox[\"expr\",\nFontSlant->\"Italic\"]\)] reduces any instances of contracted Kronecker tensors in \!\(\*
+StyleBox[\"expr\",\nFontSlant->\"Italic\"]\).";
+
 
 EndPackage[]

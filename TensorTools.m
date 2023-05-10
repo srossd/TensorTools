@@ -11,12 +11,14 @@ Begin["`Private`"]
 $TensorHeads = {Tensor, TensorPermute, Contract, TP};
 AddTensorHead[head_] := If[!MemberQ[$TensorHeads, head], AppendTo[$TensorHeads, head]];
 
+Index[dim_, alphabet_] := Index[dim, alphabet, 1];
+Index[dim_, alphabet_, offset_] := Index[dim, alphabet, offset, Identity];
 Unprotect[Set];
 Set[IndexData[idxtype_], i_Index] /; !TrueQ[$vgIndexData] := Block[{$vgIndexData = True}, idxtype = idxtype; IndexData[idxtype] = i;];
 Protect[Set];
 
 DisplayName[idx_, ct_] := 
-  With[{data = IndexData[idx]}, If[Length[data] == 3, Identity, data[[4]]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]];
+  With[{data = IndexData[idx]}, data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]];
 
 DisplayTemplate[Tensor[names_]] := DisplayTemplate[names];
 
@@ -323,6 +325,13 @@ SwapIn[TensorProduct[t1_, rest__], {mini_, maxi_}, replacement_] :=
    TensorProduct[t1, 
     SwapIn[TensorProduct[rest], {mini, maxi} - Length[Symbolic[t1]], 
      replacement]]];
+     
+withCounts[xs_] := 
+  Thread[{Table[1 + Count[xs[[;; i - 1]], xs[[i]]], {i, Length[xs]}], 
+    xs}];
+countsToPerm[pairs_] := 
+ With[{pi = PositionIndex[pairs[[;; , 2]]]}, 
+  Table[pi[pair[[2]]][[pair[[1]]]], {pair, pairs}]]
 
 SwapIn[TensorPermute[t_, perm_], {mini_, maxi_}, 
     a_. replacement_Tensor, opt : OptionsPattern[]] /; 
@@ -347,12 +356,13 @@ SwapIn[TensorPermute[t_, perm_], {mini_, maxi_},
            Select[Symbolic[t], Length[#] > 1 &][[;; mini - 1]]) - 
          1] + 1, Length@Indices[t]]},
    TensorPermute[SwapIn[t, {mini, maxi}, a replacement, opt],
-    riffleIn[ssp[[perm]][[InversePermutation[ssp]]], 
+    riffleIn[(*ssp[[perm]][[InversePermutation[ssp]]]*) countsToPerm[(withCounts[
+     First /@ Indices[t]][[perm]])[[InversePermutation[ssp]]]], 
      Flatten[OptionValue["Contraction"]] + 
       Total[(Length /@ Symbolic[t][[;; mini - 1]]) - 1]]]
    ];
 
-SwapIn[Contract[t_, pairs_, OptionsPattern[]], {mini_, maxi_}, 
+(*SwapIn[Contract[t_, pairs_, OptionsPattern[]], {mini_, maxi_}, 
     a_. replacement_Tensor, opt : OptionsPattern[]] /; 
    If[Sort[Indices[
        Tensor[Select[Symbolic[t], Length[#] > 1 &][[
@@ -362,8 +372,8 @@ SwapIn[Contract[t_, pairs_, OptionsPattern[]], {mini_, maxi_},
     True, Message[SwapIn::incommensurate, 
      TraditionalForm[
       Tensor[Select[Symbolic[t], Length[#] > 1 &][[mini ;; maxi]]]],
-     TraditionalForm[replacement]]; False] := 
-  Contract[SwapIn[t, {mini, maxi}, a replacement, opt],
+     TraditionalForm[replacement]]; False] := With[{inner = SwapIn[t, {mini, maxi}, a replacement, opt]},
+  Contract[inner,
    pairs /. 
     Join[Thread[
       Range[Total[(Length /@ 
@@ -395,7 +405,42 @@ SwapIn[Contract[t_, pairs_, OptionsPattern[]], {mini_, maxi_},
               Select[Symbolic[t], Length[#] > 1 &][[;; maxi]]) - 1] + 
           1, Total[
           Length /@ Select[Symbolic[t], Length[#] > 1 &] - 1]] + 
-        Length@Flatten@OptionValue["Contraction"]]]];
+        Length@Flatten@OptionValue["Contraction"]]]]
+     ];*)
+     
+SwapIn[Contract[t_, pairs_, OptionsPattern[]], {mini_, maxi_}, 
+   a_. replacement_Tensor, opt : OptionsPattern[]] /; 
+  If[Sort[Indices[
+      Tensor[Select[Symbolic[t], Length[#] > 1 &][[mini ;; maxi]]]]] ===
+     Sort[Delete[Indices[replacement], 
+      List /@ Flatten[OptionValue[SwapIn, opt, "Contraction"]]]], 
+   True, Message[SwapIn::incommensurate, 
+    TraditionalForm[
+     Tensor[Select[Symbolic[t], Length[#] > 1 &][[mini ;; maxi]]]], 
+    TraditionalForm[replacement]]; False] := 
+ With[{inner = SwapIn[t, {mini, maxi}, a replacement, opt], 
+   ssp = subpermute[
+     Ordering[
+       Delete[Indices[replacement], 
+        List /@ Flatten[
+          OptionValue["Contraction"]]]][[InversePermutation@
+        Ordering[
+         Indices[Tensor[
+           Select[Symbolic[t], Length[#] > 1 &][[mini ;; maxi]]]]]]], 
+     Total[(Length /@ 
+          Select[Symbolic[t], Length[#] > 1 &][[;; mini - 1]]) - 1] + 
+      1, Length@Indices[t]]},
+  Contract[inner, 
+   pairs /. 
+       n_Integer :> InversePermutation[TensorPermutation[t]][[n]] /. 
+      n_Integer :> ssp[[n]] /. 
+     n_Integer :> 
+      n + shift[n, 
+        Flatten[OptionValue["Contraction"]] + 
+         Total[(Length /@ 
+             Select[Symbolic[t], Length[#] > 1 &][[;; mini - 1]]) - 
+           1]] /. n_Integer :> TensorPermutation[inner][[n]]]
+  ]
 
 SwapIn[t_, {mini_, maxi_}, 
     a_. c : Contract[replacement_, pairs_, OptionsPattern[]], 
@@ -551,6 +596,88 @@ NormalOrder[t : (_Tensor | _Contract | _TensorPermute | _TP), opt: OptionsPatter
 		]
 	]
 ];
+
+reduceList[xs_] := InversePermutation[Ordering[xs]];
+
+deltaRules[t_Tensor | t_TensorPermute] := 
+ Module[{symb, deltaPositions, perm = TensorPermutation[t], 
+   unpermed},
+  symb = Symbolic[t];
+  deltaPositions = 
+   Select[Range@Length[symb], 
+    MatchQ[symb[[#]], {"\[Delta]", Raised[i_], Lowered[i_]}] &];
+  unpermed = 
+   Flatten[{#, {Reverse[#[[1]]], #[[2]]}} & /@ 
+     Table[{Total[Length /@ symb[[;; i - 1]] - 1] + {1, 2}, i}, {i, 
+       deltaPositions}], 1];
+  Association @@ (unpermed /. {{a_, b_}, 
+       c_Integer} :> (perm[[a]] -> {perm[[b]], c}))
+  ]
+
+thread[rules_, pairs_, i_] := Module[{r = rules[i][[1]], threaded},
+   threaded = 
+    If[MemberQ[Flatten[pairs], r], 
+     First@Cases[pairs, {OrderlessPatternSequence[r, x_]} :> x], r];
+   {threaded, 
+    If[threaded == r, Select[pairs, ! MemberQ[#, i] &], 
+     Prepend[Select[
+       pairs, ! MemberQ[#, i] && ! MemberQ[#, threaded] &], {i, 
+       threaded}]]}
+   ];
+   
+KroneckerReduce[Contract[t_, pairs_], offset_ : 1] := 
+  With[{rules = deltaRules[t]},
+   If[offset > Length[pairs], Contract[t, pairs],
+    Switch[MemberQ[Keys[rules], #] & /@ pairs[[offset]],
+     {True, True},
+     If[rules[pairs[[offset, 1]]][[1]] == pairs[[offset, 2]],
+      IndexData[Indices[t][[pairs[[offset, 1]], 1]]][[
+        1]] KroneckerReduce[
+        Contract[DeleteFactor[t, rules[pairs[[offset, 1]]][[2]]], 
+         Delete[pairs, offset] /. 
+          n_Integer :> (n - Boole[n > pairs[[offset, 1]]] - 
+             Boole[n > pairs[[offset, 2]]])], offset], 
+      With[{th = thread[rules, pairs, pairs[[offset, 1]]]},
+       KroneckerReduce[
+        Contract[
+         DeleteFactor[t, 
+          rules[pairs[[offset, 1]]][[2]], {pairs[[offset, 1]] -> 
+            th[[1]]}], 
+         th[[2]] /. 
+          n_Integer :> (n - Boole[n > pairs[[offset, 1]]] - 
+             Boole[n > rules[pairs[[offset, 1]]][[1]]])], offset]
+       ]
+      ],
+      {True, False},
+     With[{th = thread[rules, pairs, pairs[[offset, 1]]]},
+      KroneckerReduce[
+       Contract[
+        DeleteFactor[t, 
+         rules[pairs[[offset, 1]]][[
+          2]], {pairs[[offset, 1]] -> th[[1]]}], 
+        th[[2]] /. 
+         n_Integer :> (n - Boole[n > pairs[[offset, 1]]] - 
+            Boole[n > rules[pairs[[offset, 1]]][[1]]])], offset]
+      ],
+      {False, True},
+     With[{th = thread[rules, pairs, pairs[[offset, 2]]]},
+      KroneckerReduce[
+       Contract[
+        DeleteFactor[t, 
+         rules[pairs[[offset, 2]]][[2]], {pairs[[offset, 2]] -> 
+           th[[1]]}], 
+        th[[2]] /. 
+         n_Integer :> (n - Boole[n > pairs[[offset, 2]]] - 
+            Boole[n > rules[pairs[[offset, 2]]][[1]]])], offset]
+      ],
+     {False, False},
+     KroneckerReduce[Contract[t, pairs], offset + 1]
+     ]
+    ]
+   ];
+KroneckerReduce[t_Tensor | t_TensorPermute, offset_ : 1] := t;
+KroneckerReduce[a_ b_, offset_ : 1] /; FreeQ[a, Alternatives @@ $TensorHeads] := a KroneckerReduce[b, offset];
+KroneckerReduce[a_ + b_, offset_ : 1] := KroneckerReduce[a, offset] + KroneckerReduce[b, offset];
 
 End[]
 
