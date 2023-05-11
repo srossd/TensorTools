@@ -280,5 +280,14 @@ KroneckerReduce::usage = "KroneckerReduce[\!\(\*
 StyleBox[\"expr\",\nFontSlant->\"Italic\"]\)] reduces any instances of contracted Kronecker tensors in \!\(\*
 StyleBox[\"expr\",\nFontSlant->\"Italic\"]\).";
 
+DeleteFactor::usage = "DeleteFactor[\!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)\!\(\*
+StyleBox[\",\",\nFontSlant->\"Italic\"]\)\!\(\*
+StyleBox[\" \",\nFontSlant->\"Italic\"]\)\!\(\*
+StyleBox[\"i\",\nFontSlant->\"Italic\"]\)] deletes the \*
+StyleBox[\(\!\(\*
+StyleBox[\"i\",\nFontSlant->\"Italic\"]\)th\)] factor from \!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\).";
+
 
 EndPackage[]
