@@ -578,9 +578,10 @@ Set[Anticommutator[t1_, t2_], t3_] /; TrueQ[$vgAnticommutator] := Block[{$vgAnti
 ];
 Protect[Set];
 
-Options[NormalOrder] = {"Vacuum" -> False, "ConjugateVacuum" -> False, "VEV" -> False};
+Options[NormalOrder] = {"Vacuum" -> False, "ConjugateVacuum" -> False, "VEV" -> False, "Callback" -> Identity};
 NormalOrder[a_ + b_, opt: OptionsPattern[]] := NormalOrder[a, opt] + NormalOrder[b, opt];
 NormalOrder[a_ b_, opt: OptionsPattern[]] /; FreeQ[a, Alternatives @@ (Blank /@ $TensorHeads)] := a NormalOrder[b, opt];
+NormalOrder[a_, opt: OptionsPattern[]] /; FreeQ[a, Alternatives @@ (Blank /@ $TensorHeads)] := a;
 NormalOrder[t : (_Tensor | _Contract | _TensorPermute | _TP), opt: OptionsPattern[]] := With[{symb = Symbolic[t]},
 	Which[
 		(OptionValue["Vacuum"] || OptionValue["VEV"]) && MemberQ[$Annihilators, symb[[-1,1]]], 0,
@@ -588,8 +589,8 @@ NormalOrder[t : (_Tensor | _Contract | _TensorPermute | _TP), opt: OptionsPatter
 		True, If[MatchQ[symb, {___, a_List, b_List, ___} /; (MemberQ[$Annihilators, a[[1]]] || MemberQ[$Creators, b[[1]]]) && (Head[Commutator[Tensor[{a}], Tensor[{b}]]] =!= Commutator || Head[Anticommutator[Tensor[{a}], Tensor[{b}]]] =!= Anticommutator)],
 			With[{fp = First@Cases[symb, {x___, a_List, b_List, ___} /; (MemberQ[$Annihilators, a[[1]]] || MemberQ[$Creators, b[[1]]]) && (Head[Commutator[Tensor[{a}], Tensor[{b}]]] =!= Commutator || Head[Anticommutator[Tensor[{a}], Tensor[{b}]]] =!= Anticommutator) :> Length[{x}] + 1, All]},
 				If[Head[Commutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp+1]]}]]] =!= Commutator,
-					NormalOrder[SwapIn[t, {fp, fp + 1}, Commutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp + 1]]}]]] + SwapFactors[t, fp], opt],
-					NormalOrder[SwapIn[t, {fp, fp + 1}, Anticommutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp + 1]]}]]] - SwapFactors[t, fp], opt]
+					NormalOrder[OptionValue["Callback"][SwapIn[t, {fp, fp + 1}, Commutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp + 1]]}]]]] + SwapFactors[t, fp], opt],
+					NormalOrder[OptionValue["Callback"][SwapIn[t, {fp, fp + 1}, Anticommutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp + 1]]}]]]] - SwapFactors[t, fp], opt]
 				]
 			],
 			t
