@@ -18,7 +18,7 @@ Set[IndexData[idxtype_], i_Index] /; !TrueQ[$vgIndexData] := Block[{$vgIndexData
 Protect[Set];
 
 DisplayName[idx_, ct_] := 
-  With[{data = IndexData[idx]}, data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]];
+  With[{data = IndexData[idx]}, With[{s = data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]}, If[!StringQ[s], s, ToExpression[s, TraditionalForm, HoldForm]]]];
 
 DisplayTemplate[Tensor[names_]] := DisplayTemplate[names];
 
@@ -35,7 +35,7 @@ DisplayTemplate[names_List] := Block[{ctr, ii},
          True, concat][#1, 
         If[MatchQ[#2, _Raised | _Lowered], 
          dn[ii++, #2[[1]], ctr[#2[[1]]] = ctr[#2[[1]]] + 1], #2]] &, 
-      Flatten[names]] //. {Subscript[Subscript[a_, b_], c_] :> 
+      Replace[Flatten[names], expr_?StringQ :> Quiet[Check[ToExpression[expr, TraditionalForm, HoldForm], expr]], {1}]] //. {Subscript[Subscript[a_, b_], c_] :> 
        Subscript[a, Row[{b, c}]], 
       Superscript[Superscript[a_, b_], c_] :> 
        Superscript[a, Row[{b, c}]]} /. 
@@ -578,9 +578,10 @@ Set[Anticommutator[t1_, t2_], t3_] /; TrueQ[$vgAnticommutator] := Block[{$vgAnti
 ];
 Protect[Set];
 
-Options[NormalOrder] = {"Vacuum" -> False, "ConjugateVacuum" -> False, "VEV" -> False};
+Options[NormalOrder] = {"Vacuum" -> False, "ConjugateVacuum" -> False, "VEV" -> False, "Callback" -> Identity};
 NormalOrder[a_ + b_, opt: OptionsPattern[]] := NormalOrder[a, opt] + NormalOrder[b, opt];
 NormalOrder[a_ b_, opt: OptionsPattern[]] /; FreeQ[a, Alternatives @@ (Blank /@ $TensorHeads)] := a NormalOrder[b, opt];
+NormalOrder[a_, opt: OptionsPattern[]] /; FreeQ[a, Alternatives @@ (Blank /@ $TensorHeads)] := a;
 NormalOrder[t : (_Tensor | _Contract | _TensorPermute | _TP), opt: OptionsPattern[]] := With[{symb = Symbolic[t]},
 	Which[
 		(OptionValue["Vacuum"] || OptionValue["VEV"]) && MemberQ[$Annihilators, symb[[-1,1]]], 0,
@@ -588,8 +589,8 @@ NormalOrder[t : (_Tensor | _Contract | _TensorPermute | _TP), opt: OptionsPatter
 		True, If[MatchQ[symb, {___, a_List, b_List, ___} /; (MemberQ[$Annihilators, a[[1]]] || MemberQ[$Creators, b[[1]]]) && (Head[Commutator[Tensor[{a}], Tensor[{b}]]] =!= Commutator || Head[Anticommutator[Tensor[{a}], Tensor[{b}]]] =!= Anticommutator)],
 			With[{fp = First@Cases[symb, {x___, a_List, b_List, ___} /; (MemberQ[$Annihilators, a[[1]]] || MemberQ[$Creators, b[[1]]]) && (Head[Commutator[Tensor[{a}], Tensor[{b}]]] =!= Commutator || Head[Anticommutator[Tensor[{a}], Tensor[{b}]]] =!= Anticommutator) :> Length[{x}] + 1, All]},
 				If[Head[Commutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp+1]]}]]] =!= Commutator,
-					NormalOrder[SwapIn[t, {fp, fp + 1}, Commutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp + 1]]}]]] + SwapFactors[t, fp], opt],
-					NormalOrder[SwapIn[t, {fp, fp + 1}, Anticommutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp + 1]]}]]] - SwapFactors[t, fp], opt]
+					NormalOrder[OptionValue["Callback"][SwapIn[t, {fp, fp + 1}, Commutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp + 1]]}]]]] + SwapFactors[t, fp], opt],
+					NormalOrder[OptionValue["Callback"][SwapIn[t, {fp, fp + 1}, Anticommutator[Tensor[{symb[[fp]]}], Tensor[{symb[[fp + 1]]}]]]] - SwapFactors[t, fp], opt]
 				]
 			],
 			t
@@ -599,7 +600,7 @@ NormalOrder[t : (_Tensor | _Contract | _TensorPermute | _TP), opt: OptionsPatter
 
 reduceList[xs_] := InversePermutation[Ordering[xs]];
 
-deltaRules[t_Tensor | t_TensorPermute] := 
+deltas[t_Tensor | t_TensorPermute] := 
  Module[{symb, deltaPositions, perm = TensorPermutation[t], 
    unpermed},
   symb = Symbolic[t];
@@ -607,77 +608,80 @@ deltaRules[t_Tensor | t_TensorPermute] :=
    Select[Range@Length[symb], 
     MatchQ[symb[[#]], {"\[Delta]", Raised[i_], Lowered[i_]}] &];
   unpermed = 
-   Flatten[{#, {Reverse[#[[1]]], #[[2]]}} & /@ 
-     Table[{Total[Length /@ symb[[;; i - 1]] - 1] + {1, 2}, i}, {i, 
-       deltaPositions}], 1];
-  Association @@ (unpermed /. {{a_, b_}, 
-       c_Integer} :> (perm[[a]] -> {perm[[b]], c}))
+   Table[{i, Total[Length /@ symb[[;; i - 1]] - 1] + {1, 2}}, {i, 
+     deltaPositions}];
+  unpermed /. {a_Integer, b_Integer} :> {perm[[a]], perm[[b]]}
   ]
 
-thread[rules_, pairs_, i_] := Module[{r = rules[i][[1]], threaded},
-   threaded = 
-    If[MemberQ[Flatten[pairs], r], 
-     First@Cases[pairs, {OrderlessPatternSequence[r, x_]} :> x], r];
-   {threaded, 
-    If[threaded == r, Select[pairs, ! MemberQ[#, i] &], 
-     Prepend[Select[
-       pairs, ! MemberQ[#, i] && ! MemberQ[#, threaded] &], {i, 
-       threaded}]]}
-   ];
+other[pairs_, i_] := 
+  First@Cases[pairs, {OrderlessPatternSequence[i, x_]} :> x];
+  
+DeleteFactor[t_Tensor | t_TensorPermute, i_, rules_ : {}] := 
+ Module[{symb, rg, perm},
+  symb = Symbolic[t];
+  rg = Range[Total[Length /@ symb[[;; i - 1]] - 1] + 1, 
+    Total[Length /@ symb[[;; i]] - 1]];
+  perm = TensorPermutation[t];
+  TensorPermute[Tensor[Delete[symb, i]], 
+   reduceList[Delete[perm, List /@ rg] /. rules]]
+  ]
    
 KroneckerReduce[Contract[t_, pairs_], offset_ : 1] := 
-  With[{rules = deltaRules[t]},
-   If[offset > Length[pairs], Contract[t, pairs],
-    Switch[MemberQ[Keys[rules], #] & /@ pairs[[offset]],
-     {True, True},
-     If[rules[pairs[[offset, 1]]][[1]] == pairs[[offset, 2]],
-      IndexData[Indices[t][[pairs[[offset, 1]], 1]]][[
-        1]] KroneckerReduce[
-        Contract[DeleteFactor[t, rules[pairs[[offset, 1]]][[2]]], 
-         Delete[pairs, offset] /. 
-          n_Integer :> (n - Boole[n > pairs[[offset, 1]]] - 
-             Boole[n > pairs[[offset, 2]]])], offset], 
-      With[{th = thread[rules, pairs, pairs[[offset, 1]]]},
-       KroneckerReduce[
-        Contract[
-         DeleteFactor[t, 
-          rules[pairs[[offset, 1]]][[2]], {pairs[[offset, 1]] -> 
-            th[[1]]}], 
-         th[[2]] /. 
-          n_Integer :> (n - Boole[n > pairs[[offset, 1]]] - 
-             Boole[n > rules[pairs[[offset, 1]]][[1]]])], offset]
-       ]
-      ],
-      {True, False},
-     With[{th = thread[rules, pairs, pairs[[offset, 1]]]},
-      KroneckerReduce[
-       Contract[
-        DeleteFactor[t, 
-         rules[pairs[[offset, 1]]][[
-          2]], {pairs[[offset, 1]] -> th[[1]]}], 
-        th[[2]] /. 
-         n_Integer :> (n - Boole[n > pairs[[offset, 1]]] - 
-            Boole[n > rules[pairs[[offset, 1]]][[1]]])], offset]
-      ],
-      {False, True},
-     With[{th = thread[rules, pairs, pairs[[offset, 2]]]},
-      KroneckerReduce[
-       Contract[
-        DeleteFactor[t, 
-         rules[pairs[[offset, 2]]][[2]], {pairs[[offset, 2]] -> 
-           th[[1]]}], 
-        th[[2]] /. 
-         n_Integer :> (n - Boole[n > pairs[[offset, 2]]] - 
-            Boole[n > rules[pairs[[offset, 2]]][[1]]])], offset]
-      ],
+  With[{ds = deltas[t]},
+   If[offset > Length[ds], Contract[t, pairs],
+    Switch[MemberQ[Flatten[pairs], #] & /@ ds[[offset, 2]],
      {False, False},
-     KroneckerReduce[Contract[t, pairs], offset + 1]
+     KroneckerReduce[Contract[t, pairs], offset + 1],
+     {True, False},
+     KroneckerReduce[
+      Contract[
+       DeleteFactor[t, 
+        ds[[offset, 1]], {other[pairs, ds[[offset, 2, 1]]] -> 
+          ds[[offset, 2, 2]]}], 
+       Select[pairs, ! MemberQ[#, ds[[offset, 2, 1]]] &] /. 
+        n_Integer :> 
+         n - Boole[n > ds[[offset, 2, 1]]] - 
+          Boole[n > ds[[offset, 2, 2]]]], offset],
+     {False, True},
+     KroneckerReduce[
+      Contract[
+       DeleteFactor[t, 
+        ds[[offset, 1]], {other[pairs, ds[[offset, 2, 2]]] -> 
+          ds[[offset, 2, 1]]}], 
+       Select[pairs, ! MemberQ[#, ds[[offset, 2, 2]]] &] /. 
+        n_Integer :> 
+         n - Boole[n > ds[[offset, 2, 1]]] - 
+          Boole[n > ds[[offset, 2, 2]]]], offset],
+     {True, True},
+     KroneckerReduce[
+      If[other[pairs, ds[[offset, 2, 1]]] == ds[[offset, 2, 2]],
+       IndexData[Indices[t][[ds[[offset, 2, 1]], 1]]][[1]] Contract[
+         DeleteFactor[t, ds[[offset, 1]]], 
+         Select[pairs, ! MemberQ[#, ds[[offset, 2, 1]]] &] /. 
+          n_Integer :> 
+           n - Boole[n > ds[[offset, 2, 1]]] - 
+            Boole[n > ds[[offset, 2, 2]]]],
+       Contract[DeleteFactor[t, ds[[offset, 1]]], 
+        Append[Select[
+           pairs, ! MemberQ[#, ds[[offset, 2, 1]]] && ! MemberQ[#, ds[[offset, 2, 2]]] &], {other[pairs, 
+            ds[[offset, 2, 1]]], 
+           other[pairs, ds[[offset, 2, 2]]]}] /. 
+         n_Integer :> 
+          n - Boole[n > ds[[offset, 2, 1]]] - 
+           Boole[n > ds[[offset, 2, 2]]]]
+       ], offset]
      ]
     ]
    ];
 KroneckerReduce[t_Tensor | t_TensorPermute, offset_ : 1] := t;
-KroneckerReduce[a_ b_, offset_ : 1] /; FreeQ[a, Alternatives @@ $TensorHeads] := a KroneckerReduce[b, offset];
-KroneckerReduce[a_ + b_, offset_ : 1] := KroneckerReduce[a, offset] + KroneckerReduce[b, offset];
+KroneckerReduce[a_ , offset_ : 1] /; 
+   FreeQ[a, Alternatives @@ TensorTools`Private`$TensorHeads] := a ;
+KroneckerReduce[a_ b_, offset_ : 1] /; 
+   FreeQ[a, Alternatives @@ TensorTools`Private`$TensorHeads] := 
+  a KroneckerReduce[b, offset];
+KroneckerReduce[a_ + b_, offset_ : 1] := 
+  KroneckerReduce[a, offset] + KroneckerReduce[b, offset];
+Tensor[{}] = 1;
 
 End[]
 
