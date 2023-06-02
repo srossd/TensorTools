@@ -18,7 +18,7 @@ Set[IndexData[idxtype_], i_Index] /; !TrueQ[$vgIndexData] := Block[{$vgIndexData
 Protect[Set];
 
 DisplayName[idx_, ct_] := 
-  With[{data = IndexData[idx]}, data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]];
+  With[{data = IndexData[idx]}, With[{s = data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]}, If[!StringQ[s], s, ToExpression[s, TraditionalForm, HoldForm]]]];
 
 DisplayTemplate[Tensor[names_]] := DisplayTemplate[names];
 
@@ -35,7 +35,7 @@ DisplayTemplate[names_List] := Block[{ctr, ii},
          True, concat][#1, 
         If[MatchQ[#2, _Raised | _Lowered], 
          dn[ii++, #2[[1]], ctr[#2[[1]]] = ctr[#2[[1]]] + 1], #2]] &, 
-      Flatten[names]] //. {Subscript[Subscript[a_, b_], c_] :> 
+      Replace[Flatten[names], expr_?StringQ :> Quiet[Check[ToExpression[expr, TraditionalForm, HoldForm], expr]], {1}]] //. {Subscript[Subscript[a_, b_], c_] :> 
        Subscript[a, Row[{b, c}]], 
       Superscript[Superscript[a_, b_], c_] :> 
        Superscript[a, Row[{b, c}]]} /. 
