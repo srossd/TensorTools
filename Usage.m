@@ -223,6 +223,10 @@ TensorSymmetries::usage = "TensorSymmetries[\!\(\*
 StyleBox[\"name\",\nFontSlant->\"Italic\"]\)] gives the symmetry of the tensor named \!\(\*
 StyleBox[\"name\",\nFontSlant->\"Italic\"]\).";
 
+SymmetryReduce::usage = "SymmetryReduce[\!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] uses any known symmetries to put the indices of \!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\) into a canonical order.";
+
 SwapIn::usage = "SwapIn[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\), {\!\(\*
 StyleBox[\"from\",\nFontSlant->\"Italic\"]\), \!\(\*
