@@ -276,22 +276,27 @@ SymmetryPermutations[symmetry_, OptionsPattern[]] := symmetry /. If[!TrueQ[Optio
 
 DeclareTensorSymmetry[name_, symmetry_] := (TensorSymmetries[name] = symmetry); 
 
+TensorSymmetries[t_Tensor] := With[{symb=Symbolic[t]},
+   Flatten[Table[TensorSymmetries[symb[[i, 1]]] /. Cycles[xs_] :> 
+	    Cycles[xs + Total[Length /@ symb[[;; i - 1]] - 1]], 
+	 {i, Length[symb]}], 
+   1]
+];
+TensorSymmetries[Contract[t_, pairs_]] := {#[[1]] /. n_Integer :> n - Length@Select[Flatten[pairs], # < n &], #[[2]]} & /@ 
+	Select[TensorSymmetries[t], Intersection[#[[1,1,1]], Flatten[pairs]] == {} &];
+	
+TensorSymmetries[TensorPermute[t_, perm_]] := {#[[1]] /. n_Integer :> perm[[n]], #[[2]]} & /@ TensorSymmetries[t];
+
+
 SymmetryReduce[t_Tensor] := t;
 SymmetryReduce[Contract[t_Tensor, pairs_]] := Contract[t, pairs];
 SymmetryReduce[Contract[TensorPermute[t_, perm_], pairs_]] := 
-  Module[{symb, ninds, generators, rules, allperms, minimal},
-   symb = Symbolic[t];
-   ninds = Total[Length /@ symb - 1];
-   generators = 
-    Flatten[Table[
-      TensorSymmetries[symb[[i, 1]]] /. 
-       Cycles[xs_] :> 
-        Cycles[xs + Total[Length /@ symb[[;; i - 1]] - 1]], {i, 
-       Length[symb]}], 1];
+  Module[{ninds, generators, rules, allperms, minimal},
+   ninds = Total[Length /@ Symbolic[t] - 1];
    rules = Join[Rule @@@ pairs, Rule @@@ (Reverse /@ pairs)];
    generators = 
-    Join[generators, 
-     Cases[generators, {Cycles[xs_], sign_} /; 
+    Join[TensorSymmetries[t], 
+     Cases[TensorSymmetries[t], {Cycles[xs_], sign_} /; 
         AllTrue[Flatten[xs], MemberQ[Keys[rules], #] &] :> {Cycles[
          xs /. rules], sign}]];
    allperms = SymmetryPermutations[generators];
@@ -302,15 +307,9 @@ SymmetryReduce[Contract[TensorPermute[t_, perm_], pairs_]] :=
      pairs]
    ];
 SymmetryReduce[TensorPermute[t_, perm_]] := 
-  Module[{symb, ninds, generators, allperms, minimal},
-   symb = Symbolic[t];
-   ninds = Total[Length /@ symb - 1];
-   generators = 
-    Flatten[Table[
-      TensorSymmetries[symb[[i, 1]]] /. 
-       Cycles[xs_] :> 
-        Cycles[xs + Total[Length /@ symb[[;; i - 1]] - 1]], {i, 
-       Length[symb]}], 1];
+  Module[{ninds, generators, allperms, minimal},
+   ninds = Total[Length /@ Symbolic[t] - 1];
+   generators = TensorSymmetries[t];
    allperms = SymmetryPermutations[generators];
    minimal = 
     MinimalBy[allperms, perm[[PermutationList[#[[1]], ninds]]] &][[1]];

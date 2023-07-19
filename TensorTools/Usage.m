@@ -221,7 +221,10 @@ StyleBox[\"symmetry\",\nFontSlant->\"Italic\"]\).";
 
 TensorSymmetries::usage = "TensorSymmetries[\!\(\*
 StyleBox[\"name\",\nFontSlant->\"Italic\"]\)] gives the symmetry of the tensor named \!\(\*
-StyleBox[\"name\",\nFontSlant->\"Italic\"]\).";
+StyleBox[\"name\",\nFontSlant->\"Italic\"]\)
+TensorSymmetries[\!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives a list of symmetry generators of \!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\).";
 
 SymmetryReduce::usage = "SymmetryReduce[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] uses any known symmetries to put the indices of \!\(\*
