@@ -279,6 +279,10 @@ StyleBox[\" \",\nFontSlant->\"Italic\"]\)in normal order."
 Explicit::usage = "Explicit[\!\(\*
 StyleBox[\"expr\",\nFontSlant->\"Italic\"]\)] puts certain abbreviated expressions into a more explicit form.";
 
+AddExplicitRule::usage = "AddExplicitRule[\!\(\*
+StyleBox[\"rule\",\nFontSlant->\"Italic\"]\)] adds \!\(\*
+StyleBox[\"rule\",\nFontSlant->\"Italic\"]\) to the list of transformations used when calling Explicit.";
+
 Kronecker::usage = "Kronecker[\!\(\*
 StyleBox[\"idx\",\nFontSlant->\"Italic\"]\)] gives the Kronecker tensor with index type \!\(\*
 StyleBox[\"idx\",\nFontSlant->\"Italic\"]\).";
