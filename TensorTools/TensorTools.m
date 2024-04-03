@@ -18,7 +18,7 @@ Set[IndexData[idxtype_], i_Index] /; !TrueQ[$vgIndexData] := Block[{$vgIndexData
 Protect[Set];
 
 DisplayName[idx_, ct_] := 
-  With[{data = IndexData[idx]}, With[{s = data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]}, If[!StringQ[s], s, ToExpression[s, TraditionalForm, HoldForm]]]];
+  With[{data = IndexData[idx[[1]]]}, With[{s = data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]}, If[!StringQ[s], s, ToExpression[s, TraditionalForm, HoldForm]]]];
 
 DisplayTemplate[Tensor[names_]] := DisplayTemplate[names];
 
@@ -28,13 +28,19 @@ sub[a : Except[_Row], b_] := Subscript[a, b];
 sub[Row[{stuff___, last_}], b_] := Row[{stuff, sub[last, b]}];
 sup[a : Except[_Row], b_] := Superscript[a, b];
 sup[Row[{stuff___, last_}], b_] := Row[{stuff, sup[last, b]}];
-DisplayTemplate[names_List] := Block[{ctr, ii},
+DisplayTemplate[names_List] := Block[{lowercts, ctr, ii},
+   lowercts = Counts[Cases[names, _Lowered, All]];
    ctr[_] = 0;
    ii = 1;
    Fold[Which[MatchQ[#2, _Lowered], sub, MatchQ[#2, _Raised], sup, 
          True, concat][#1, 
-        If[MatchQ[#2, _Raised | _Lowered], 
-         dn[ii++, #2[[1]], ctr[#2[[1]]] = ctr[#2[[1]]] + 1], #2]] &, 
+        Which[
+           MatchQ[#2, _Lowered], 
+           dn[ii++, #2, ctr[#2] = ctr[#2] + 1],
+           MatchQ[#2, _Raised],
+           dn[ii++, #2, If[KeyExistsQ[lowercts, Lowered @@ #2], lowercts[Lowered @@ #2], 0] + (ctr[#2] = ctr[#2] + 1)],           
+           True, #2
+         ]] &, 
       Replace[Flatten[names], expr_?StringQ :> Quiet[Check[ToExpression[expr, TraditionalForm, HoldForm], expr]], {1}]] //. {Subscript[Subscript[a_, b_], c_] :> 
        Subscript[a, Row[{b, c}]], 
       Superscript[Superscript[a_, b_], c_] :> 
@@ -71,6 +77,7 @@ Components[t_] :=
      FreeQ[y, Alternatives @@ $TensorHeads] :> y TensorProduct[x, z]
 
 If[Head[explicitRules] === Symbol, explicitRules = {}];
+AddExplicitRule[rule_] := AppendTo[explicitRules, rule];
 Explicit[x_] := x //. explicitRules;
 InactiveComponents[a_ b_] /; FreeQ[a, Alternatives @@ $TensorHeads] := 
   Explicit[a] InactiveComponents[b];
@@ -126,15 +133,16 @@ reindex[template_] :=
   template /. 
     dn[i_, type_, j_] :> 
      dn[i, type, 
+     If[Head[type] === Raised, Length@Cases[template, dn[_, Lowered @@ type, _], All, Heads -> True], 0] + 
       Position[
         SortBy[Cases[template, dn[m_, type, n_] :> {m, n}, All, 
            Heads -> True], First][[;; , 2]], j][[1, 1]]] /. 
    adn[i_, type_, j_] :> 
     adn[i, type, 
-     Length@Cases[template, dn[_, type, _], All, Heads -> True] + 
+     Length@Cases[template, dn[_, _[type[[1]]], _], All, Heads -> True] + 
       Position[
         SortBy[DeleteDuplicates@
-           Cases[template, adn[m_, type, n_] :> {m, n}, All, 
+           Cases[template, adn[m_, _[type[[1]]], n_] :> {m, n}, All, 
             Heads -> True], First][[;; , 2]], j][[1, 1]]];
 DisplayTemplate[Contract[t_, pairs_, OptionsPattern[]]] := 
   Module[{template = DisplayTemplate[t], dns, dnsreplace},
@@ -543,11 +551,8 @@ SwapFactors[t_Tensor | t_TensorPermute, i_Integer] :=
    TensorPermute[
     Tensor[Symbolic[t][[subpermute[{2, 1}, i, Length@Symbolic[t]]]]], 
     subpermute[
-     indexPermutation[
-      Symbolic[t][[i, 2 ;;]] /. {Raised -> Identity, 
-        Lowered -> Identity}, 
-      Symbolic[t][[i + 1, 2 ;;]] /. {Raised -> Identity, 
-        Lowered -> Identity}], 
+     indexPermutation[Symbolic[t][[i, 2 ;;]] (*/. {Raised -> Identity, Lowered -> Identity}*), 
+      Symbolic[t][[i + 1, 2 ;;]] (*/. {Raised -> Identity, Lowered -> Identity}*)], 
      Total[Length /@ Symbolic[t][[;; i - 1]] - 1] + 1, 
      Length@Indices[t]]], (TensorPermutation[t] /. 
       n_Integer :> 
