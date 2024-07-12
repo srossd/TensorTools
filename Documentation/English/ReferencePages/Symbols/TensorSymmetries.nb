@@ -1,0 +1,195 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7360,        185]
+NotebookOptionsPosition[      5131,        133]
+NotebookOutlinePosition[      6941,        179]
+CellTagsIndexPosition[      6898,        176]
+WindowTitle->TensorSymmetries
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[GridBox[{
+   {GridBox[{
+      {
+       ItemBox[Cell[BoxData[
+         RowBox[{
+          TemplateBox[{12},
+           "Spacer1"], Cell["TENSOR TOOLS SYMBOL", "PacletNameCell",
+           TextAlignment->Center,ExpressionUUID->
+           "76eee9a2-00a4-4d18-9242-eafde8b1e4d6"], 
+          TemplateBox[{8},
+           "Spacer1"]}]],
+         TextAlignment->Center,ExpressionUUID->
+         "e0030cfa-fe53-4d48-a3ce-6552de55fc0f"],
+        Background->RGBColor[0.490196, 0.576471, 0.690196],
+        ItemSize->Full], ""}
+     },
+     GridBoxAlignment->{"Rows" -> {{Center}}},
+     GridBoxItemSize->{"Columns" -> {Full, 
+         Scaled[0.02]}, "Rows" -> {{2.5}}}], Cell[TextData[Cell[BoxData[
+     TagBox[
+      ActionMenuBox[
+       FrameBox[Cell[TextData[{
+         "URL",
+         " ",
+         Cell[BoxData[
+          GraphicsBox[
+           {GrayLevel[0.66667], Thickness[0.13], 
+            LineBox[{{-1.8, 0.5}, {0, 0}, {1.8, 0.5}}]},
+           AspectRatio->1,
+           ImageSize->20,
+           PlotRange->{{-3, 4}, {-1, 1}}]],ExpressionUUID->
+          "9d5fed81-30af-4b74-8bea-cded417ab2af"]
+        }],ExpressionUUID->"a380ff2e-30ef-4edb-9b2d-a8284e2336ec"],
+        StripOnInput->False], {"\<\"TensorTools/ref/TensorSymmetries\"\>":>
+       None, "\<\"Copy Wolfram Documentation Center URL\"\>":>
+       Module[{DocumentationSearch`Private`nb$}, 
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["TensorTools/ref/TensorSymmetries"]}, Visible -> False]]; 
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook]; 
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"]; 
+        NotebookClose[DocumentationSearch`Private`nb$]; Null], 
+       Delimiter, "\<\"Copy web URL\"\>":>
+       Module[{DocumentationSearch`Private`nb$}, 
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/language/TensorTools/ref/\
+TensorSymmetries.html"], StandardForm]], "Input", TextClipboardType -> 
+              "PlainText"]}, Visible -> False]]; 
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook]; 
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"]; 
+        NotebookClose[DocumentationSearch`Private`nb$]; 
+        Null], "\<\"Go to web URL\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[If[
+              TrueQ[DocumentationBuild`Make`Private`wsmlinkQ$8961], 
+              "http://reference.wolfram.com/system-modeler/", 
+              "http://reference.wolfram.com/language/"] <> 
+            "TensorTools/ref/TensorSymmetries" <> ".html"], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic,
+       MenuStyle->"URLMenu"],
+      MouseAppearanceTag["LinkHand"]]],
+     LineSpacing->{1.4, 0},ExpressionUUID->
+     "7d6e228b-86a9-45c6-96e2-bc227bfe5ec3"]], "AnchorBar",
+     CacheGraphics->False,ExpressionUUID->
+     "29d014c9-b908-4b86-87b0-edd5056a7566"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
+   "RowsIndexed" -> {}}},
+ CellID->1,ExpressionUUID->"f442b67e-5fe1-40f4-bffc-ad3fa028b3db"],
+
+Cell["TensorTools`", "ContextNameCell",ExpressionUUID->"b40bcd12-bb0d-4f53-b467-038de4211771"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {Cell[TextData[{
+     Cell[
+     "TensorSymmetries", "ObjectName",ExpressionUUID->
+      "f469b160-eb0c-416b-b875-39663e58ee37"],
+     Cell[BoxData[
+      TemplateBox[{8},
+       "Spacer1"]],ExpressionUUID->"856e5be9-d036-4141-b98c-68c328692603"],
+     Cell[BoxData[
+     ""], "ObjectNameTranslation",ExpressionUUID->
+      "e8649329-c39a-4ddc-9ce5-4c422b9d51ce"]
+    }],ExpressionUUID->"70e5cf8f-6a37-4be7-b5b7-63d0dc2124a6"], 
+    "\[SpanFromLeft]"}
+  }]], "ObjectNameGrid",ExpressionUUID->"0f2bc0ef-7f17-43af-84a6-\
+5012c7ee7a31"],
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"TensorSymmetries", "[", "]"}]], "InlineFormula",
+      FontFamily->"Source Sans Pro",ExpressionUUID->
+      "ad6a698b-113d-4494-b0d9-91c47148a18c"],
+     " \[LineSeparator]TensorSymmetries"
+    }],ExpressionUUID->"4f1f6632-fbb2-496d-922a-8eb7a1543aa1"]}
+  }]], "Usage",
+ CellID->982511436,ExpressionUUID->"eb12602f-fbe7-458b-8296-6cbea4536889"]
+}, Open  ]],
+
+Cell[" ", "FooterCell",ExpressionUUID->"45b15cba-31f5-4054-b0bc-efa4dae1fe0b"]
+},
+Saveable->False,
+ScreenStyleEnvironment->"Working",
+WindowSize->{900., 783.375},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+WindowTitle->"TensorSymmetries",
+TaggingRules->{
+ "ModificationHighlight" -> False, "ColorType" -> "", "LinkTrails" -> "", 
+  "HasOptions" -> True, "ExampleCounter" -> 1, 
+  "Openers" -> {
+   "PrimaryExamplesSection" -> Open, "ExampleSection" -> {"0" -> Open}}, 
+  "NewStyles" -> True, "CitationPopupData" -> $Failed, "ShowCitation" -> 
+  False, "RootCaptions" -> "", 
+  "Metadata" -> {
+   "built" -> "{2023, 4, 8, 11, 13, 30.6146623}", 
+    "history" -> {"0.0", "", "", ""}, "context" -> "TensorTools`", 
+    "keywords" -> {}, "specialkeywords" -> {}, 
+    "tutorialcollectionlinks" -> {}, "index" -> True, "label" -> 
+    "Tensor Tools Symbol", "language" -> "en", "paclet" -> "TensorTools", 
+    "status" -> "None", "summary" -> "TensorSymmetries[] TensorSymmetries", 
+    "synonyms" -> {}, "tabletags" -> {}, "title" -> "TensorSymmetries", 
+    "titlemodifier" -> "", "windowtitle" -> "TensorSymmetries", "type" -> 
+    "Symbol", "uri" -> "TensorTools/ref/TensorSymmetries"}},
+CellContext->"Global`",
+FrontEndVersion->"13.1 for Microsoft Windows (64-bit) (June 16, 2022)",
+StyleDefinitions->Notebook[{
+   Cell[
+    StyleData[
+    StyleDefinitions -> FrontEnd`FileName[{"Wolfram"}, "Reference.nb"]]], 
+   Cell[
+    StyleData["Input"], CellContext -> "Global`"], 
+   Cell[
+    StyleData["Output"], CellContext -> "Global`"]}, Visible -> False, 
+  FrontEndVersion -> "13.1 for Microsoft Windows (64-bit) (June 16, 2022)", 
+  StyleDefinitions -> "Default.nb"],
+ExpressionUUID->"8b9d0fea-0065-46e0-b65d-5c943f15a4c4"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[588, 21, 3337, 76, 70, "AnchorBarGrid",ExpressionUUID->"f442b67e-5fe1-40f4-bffc-ad3fa028b3db",
+ CellID->1],
+Cell[3928, 99, 94, 0, 70, "ContextNameCell",ExpressionUUID->"b40bcd12-bb0d-4f53-b467-038de4211771"],
+Cell[CellGroupData[{
+Cell[4047, 103, 559, 14, 70, "ObjectNameGrid",ExpressionUUID->"0f2bc0ef-7f17-43af-84a6-5012c7ee7a31"],
+Cell[4609, 119, 425, 9, 70, "Usage",ExpressionUUID->"eb12602f-fbe7-458b-8296-6cbea4536889",
+ CellID->982511436]
+}, Open  ]],
+Cell[5049, 131, 78, 0, 70, "FooterCell",ExpressionUUID->"45b15cba-31f5-4054-b0bc-efa4dae1fe0b"]
+}
+]
+*)
+
+(* End of internal cache information *)
+
