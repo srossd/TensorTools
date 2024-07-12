@@ -18,7 +18,7 @@ Set[IndexData[idxtype_], i_Index] /; !TrueQ[$vgIndexData] := Block[{$vgIndexData
 Protect[Set];
 
 DisplayName[idx_, ct_] := 
-  With[{data = IndexData[idx[[1]]]}, With[{s = data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]}, If[!StringQ[s], s, ToExpression[s, TraditionalForm, HoldForm]]]];
+  With[{data = IndexData[idx[[1]]]}, With[{s = data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]}, If[!StringQ[s], s, ToExpression[s, TraditionalForm, HoldForm] /. Null -> ""]]];
 
 DisplayTemplate[Tensor[names_]] := DisplayTemplate[names];
 
@@ -71,10 +71,9 @@ SetAttributes[TP, Flat];
 Components[t_] := 
  Activate[
    InactiveComponents[t /. TensorProduct -> Distribute@*TP] /. 
-    TP -> Inactive[TensorProduct]] //. 
-  TensorProduct[x__, y_, z___] | 
-     TensorProduct[x___, y_, z__] /; ! ArrayQ[y] && 
-     FreeQ[y, Alternatives @@ $TensorHeads] :> y TensorProduct[x, z]
+    TP -> Inactive[TensorProduct]] /. TensorProduct -> TP //. 
+  	  TP[x__, y_, z___] | TP[x___, y_, z__] /; ! ArrayQ[y] && FreeQ[y, Alternatives @@ $TensorHeads] :> y TP[x, z] /. 
+        TP -> TensorProduct
 
 If[Head[explicitRules] === Symbol, explicitRules = {}];
 AddExplicitRule[rule_] := AppendTo[explicitRules, rule];
