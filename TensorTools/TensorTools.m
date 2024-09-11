@@ -72,7 +72,7 @@ Components[t_] :=
  Activate[
    InactiveComponents[t /. TensorProduct -> Distribute@*TP] /. 
     TP -> Inactive[TensorProduct]] /. TensorProduct -> TP //. 
-  	  TP[x__, y_, z___] | TP[x___, y_, z__] /; ! ArrayQ[y] && FreeQ[y, Alternatives @@ $TensorHeads] :> y TP[x, z] /. 
+  	  TP[x__, y_, z___] | TP[x___, y_, z__] /; ! ArrayQ[y] && !ListQ[y] && FreeQ[y, Alternatives @@ $TensorHeads] :> y TP[x, z] /. 
         TP -> TensorProduct
 
 If[Head[explicitRules] === Symbol, explicitRules = {}];
@@ -224,7 +224,7 @@ Indices[TensorPermute[t_, perm_,
         InversePermutation@perm]] /. 
        Lowered | Raised -> Identity) =!= (Indices[t] /. 
        Lowered | Raised -> Identity), 
-    Print[Indices[t][[InversePermutation@perm]] /. 
+    Print["Index permutation mismatch: ",Indices[t][[InversePermutation@perm]] /. 
       Lowered | Raised -> Identity, 
      Indices[t] /. Lowered | Raised -> Identity]]; 
    Indices[t][[InversePermutation@perm]]);
@@ -380,80 +380,23 @@ countsToPerm[pairs_] :=
  With[{pi = PositionIndex[pairs[[;; , 2]]]}, 
   Table[pi[pair[[2]]][[pair[[1]]]], {pair, pairs}]]
 
-SwapIn[TensorPermute[t_, perm_], {mini_, maxi_}, 
-    a_. replacement_Tensor, opt : OptionsPattern[]] /; 
-   If[Sort[Indices[
-       Tensor[Select[Select[Symbolic[t], Length[#] > 1 &], 
-          Length[#] > 1 &][[mini ;; maxi]]]]] === 
-     Sort[Delete[Indices[replacement], 
-       List /@ Flatten[OptionValue[SwapIn, opt, "Contraction"]]]], 
-    True, Message[SwapIn::incommensurate, 
-     TraditionalForm[Tensor[Symbolic[t][[mini ;; maxi]]]],
-     TraditionalForm[replacement]]; False] := 
-  With[{ssp = 
-     subpermute[
-      Ordering[
-        Delete[Indices[replacement], 
-         List /@ Flatten[OptionValue["Contraction"]]]][[
-       InversePermutation@
-        Ordering[
-         Indices[Tensor[
-           Select[Symbolic[t], Length[#] > 1 &][[mini ;; maxi]]]]]]], 
-      Total[(Length /@ 
-           Select[Symbolic[t], Length[#] > 1 &][[;; mini - 1]]) - 
-         1] + 1, Length@Indices[t]]},
-   TensorPermute[SwapIn[t, {mini, maxi}, a replacement, opt],
-    riffleIn[(*ssp[[perm]][[InversePermutation[ssp]]]*) countsToPerm[(withCounts[
-     First /@ Indices[t]][[perm]])[[InversePermutation[ssp]]]], 
+SwapIn[TensorPermute[t_, perm_], {mini_, maxi_}, a_. replacement_Tensor, opt : OptionsPattern[]] /; If[
+   Sort[Indices[Tensor[Select[Select[Symbolic[t], Length[#] > 1 &], Length[#] > 1 &][[mini ;; maxi]]]]] === Sort[Delete[Indices[replacement], List /@ Flatten[OptionValue[SwapIn, opt, "Contraction"]]]], 
+    True, 
+    Message[SwapIn::incommensurate, TraditionalForm[Tensor[Symbolic[t][[mini ;; maxi]]]], TraditionalForm[replacement]]; False] := 
+  With[{ssp = subpermute[
+     Ordering[Delete[Indices[replacement], List /@ Flatten[OptionValue["Contraction"]]]][[
+        InversePermutation@Ordering[Indices[Tensor[Select[Symbolic[t], Length[#] > 1 &][[mini ;; maxi]]]]]
+      ]], 
+      Total[(Length /@ Select[Symbolic[t], Length[#] > 1 &][[;; mini - 1]]) - 1] + 1, Length@Indices[t]]
+   },
+   TensorPermute[
+      SwapIn[t, {mini, maxi}, a replacement, opt],
+    riffleIn[
+       countsToPerm[(withCounts[Indices[t]][[perm]])[[InversePermutation[ssp]]]], 
      Flatten[OptionValue["Contraction"]] + 
       Total[(Length /@ Symbolic[t][[;; mini - 1]]) - 1]]]
    ];
-
-(*SwapIn[Contract[t_, pairs_, OptionsPattern[]], {mini_, maxi_}, 
-    a_. replacement_Tensor, opt : OptionsPattern[]] /; 
-   If[Sort[Indices[
-       Tensor[Select[Symbolic[t], Length[#] > 1 &][[
-         mini ;; maxi]]]]] === 
-     Sort[Delete[Indices[replacement], 
-       List /@ Flatten[OptionValue[SwapIn, opt, "Contraction"]]]], 
-    True, Message[SwapIn::incommensurate, 
-     TraditionalForm[
-      Tensor[Select[Symbolic[t], Length[#] > 1 &][[mini ;; maxi]]]],
-     TraditionalForm[replacement]]; False] := With[{inner = SwapIn[t, {mini, maxi}, a replacement, opt]},
-  Contract[inner,
-   pairs /. 
-    Join[Thread[
-      Range[Total[(Length /@ 
-             Select[Symbolic[t], Length[#] > 1 &][[;; mini - 1]]) - 
-           1] + 1, Total[(Length /@ 
-            Select[Symbolic[t], Length[#] > 1 &][[;; maxi]]) - 
-          1]] -> ((Total[(Length /@ 
-               Select[Symbolic[t], Length[#] > 1 &][[;; mini - 1]]) - 
-             1] + Ordering[
-             Delete[Indices[replacement], 
-              List /@ Flatten[OptionValue["Contraction"]]]][[
-            InversePermutation@
-             Ordering[
-              Indices[Tensor[
-                Select[Symbolic[t], Length[#] > 1 &][[
-                 mini ;; maxi]]]]]]]) /. 
-         n_Integer :> (n + 
-            shift[n, 
-             Total[(Length /@ 
-                  Select[Symbolic[t], Length[#] > 1 &][[;; 
-                    mini - 1]]) - 1] + 
-              Flatten@OptionValue["Contraction"]]))], 
-     Thread[Range[
-        Total[(Length /@ 
-             Select[Symbolic[t], Length[#] > 1 &][[;; maxi]]) - 1] + 
-         1, Total[
-         Length /@ Select[Symbolic[t], Length[#] > 1 &] - 1]] -> 
-       Range[Total[(Length /@ 
-              Select[Symbolic[t], Length[#] > 1 &][[;; maxi]]) - 1] + 
-          1, Total[
-          Length /@ Select[Symbolic[t], Length[#] > 1 &] - 1]] + 
-        Length@Flatten@OptionValue["Contraction"]]]]
-     ];*)
      
 SwapIn[Contract[t_, pairs_, OptionsPattern[]], {mini_, maxi_}, 
    a_. replacement_Tensor, opt : OptionsPattern[]] /; 
