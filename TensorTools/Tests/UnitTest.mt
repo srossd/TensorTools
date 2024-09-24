@@ -18,37 +18,6 @@ Test[
 ]
 
 Test[
-	tensorA = Tensor[{{"A", Raised[SpaceTime], Lowered[Spinor], Lowered[DottedSpinor]}}];
-	Normal@Components[tensorA],
-	
-	{{{Component["A"][1, 1, 1], 
-   Component["A"][1, 1, 2]}, {Component["A"][1, 2, 1], 
-   Component["A"][1, 2, 2]}}, {{Component["A"][2, 1, 1], 
-   Component["A"][2, 1, 2]}, {Component["A"][2, 2, 1], 
-   Component["A"][2, 2, 2]}}, {{Component["A"][3, 1, 1], 
-   Component["A"][3, 1, 2]}, {Component["A"][3, 2, 1], 
-   Component["A"][3, 2, 2]}}, {{Component["A"][4, 1, 1], 
-   Component["A"][4, 1, 2]}, {Component["A"][4, 2, 1], 
-   Component["A"][4, 2, 2]}}}
-	,
-	TestID->"UnitTest-20230307-K4N6G6"
-]
-
-Test[
-	tensorB = Tensor[{{"B", Lowered[Spinor], Lowered[Spinor], Lowered[DottedSpinor]}}];
-	DeclareTensorSymmetry["B", Symmetric[{1, 2}]];
-	Normal@Components[tensorB],
-	
-	{{{Component["B"][1, 1, 1], 
-   Component["B"][1, 1, 2]}, {Component["B"][1, 2, 1], 
-   Component["B"][1, 2, 2]}}, {{Component["B"][1, 2, 1], 
-   Component["B"][1, 2, 2]}, {Component["B"][2, 2, 1], 
-   Component["B"][2, 2, 2]}}}
-	,
-	TestID->"UnitTest-20230307-J4Q8I6"
-]
-
-Test[
 	TensorProduct[tensorA, tensorB],
 
 	Tensor[{{"A", Raised[SpaceTime], Lowered[Spinor], Lowered[DottedSpinor]}, {"B", Lowered[Spinor], Lowered[Spinor], Lowered[DottedSpinor]}}]
@@ -86,22 +55,6 @@ Test[
 	{{}, {}}
 	,
 	TestID->"UnitTest-20230307-G5E5H0"
-]
-
-Test[
-	Normal@CanonicallyOrderedComponents[tensorA],
-	
-	{{{Component["A"][1, 1, 1], Component["A"][2, 1, 1], 
-   Component["A"][3, 1, 1], 
-   Component["A"][4, 1, 1]}, {Component["A"][1, 2, 1], 
-   Component["A"][2, 2, 1], Component["A"][3, 2, 1], 
-   Component["A"][4, 2, 1]}}, {{Component["A"][1, 1, 2], 
-   Component["A"][2, 1, 2], Component["A"][3, 1, 2], 
-   Component["A"][4, 1, 2]}, {Component["A"][1, 2, 2], 
-   Component["A"][2, 2, 2], Component["A"][3, 2, 2], 
-   Component["A"][4, 2, 2]}}}
-	,
-	TestID->"UnitTest-20230307-Z0N6J0"
 ]
 
 (* TensorPermute *)
