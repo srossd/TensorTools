@@ -17,8 +17,10 @@ Unprotect[Set];
 Set[IndexData[idxtype_], i_Index] /; !TrueQ[$vgIndexData] := Block[{$vgIndexData = True}, idxtype = idxtype; IndexData[idxtype] = i;];
 Protect[Set];
 
+DisplayName[Raised[idx_], ct_] := DisplayName[idx, ct];
+DisplayName[Lowered[idx_], ct_] := DisplayName[idx, ct];
 DisplayName[idx_, ct_] := 
-  With[{data = IndexData[idx[[1]]]}, With[{s = data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]}, If[!StringQ[s], s, ToExpression[s, TraditionalForm, HoldForm] /. Null -> ""]]];
+  With[{data = IndexData[idx]}, With[{s = data[[4]][Alphabet[data[[2]]][[ct + data[[3]] - 1]]]}, If[!StringQ[s], s, ToExpression[s, TraditionalForm, HoldForm] /. Null -> ""]]];
 
 DisplayTemplate[Tensor[names_]] := DisplayTemplate[names];
 
@@ -267,11 +269,15 @@ Protect[SparseArray];
 
 TensorSymmetries[_] := {};
 Options[SymmetryPermutations] = {"Minimal" -> True};
-SymmetryPermutations[symmetry_, OptionsPattern[]] := symmetry /. If[!TrueQ[OptionValue["Minimal"]], {
+SymmetryPermutations[symmetries_, opt: OptionsPattern[]] := If[OptionValue["Minimal"],
+   Join @@ (SymmetryPermutations[#, opt] & /@ symmetries),
+   {PermutationProduct @@ #[[;;, 1]], Times @@ #[[;;, 2]]} & /@ Tuples[SymmetryPermutations[#, opt] & /@ symmetries]
+];
+SymmetryPermutations[symmetry: (_Symmetric | _Antisymmetric | {_Cycles, _Integer}), OptionsPattern[]] := symmetry /. If[!TrueQ[OptionValue["Minimal"]], {
    Symmetric[xs_] :> 
-    Table[{FindPermutation[xs, xs[[p]]], 1}, {p, Permutations@Range@Length[xs]}],
+    Table[{FindPermutation[xs, xs[[p]]] /. n_Integer :> xs[[n]], 1}, {p, Permutations@Range@Length[xs]}],
    Antisymmetric[xs_] :> 
-    Table[{FindPermutation[xs, xs[[p]]], Signature[p]}, {p, Permutations@Range@Length[xs]}],
+    Table[{FindPermutation[xs, xs[[p]]] /. n_Integer :> xs[[n]], Signature[p]}, {p, Permutations@Range@Length[xs]}],
    cycles_ :> 
     Table[{PermutationProduct @@ s[[;; , 1]], 
       Times @@ s[[;; , 2]]}, {s, Subsets[List @@ cycles]}]
@@ -284,15 +290,19 @@ SymmetryPermutations[symmetry_, OptionsPattern[]] := symmetry /. If[!TrueQ[Optio
 DeclareTensorSymmetry[name_, symmetry_] := (TensorSymmetries[name] = symmetry); 
 
 TensorSymmetries[t_Tensor] := With[{symb=Symbolic[t]},
-   Flatten[Table[TensorSymmetries[symb[[i, 1]]] /. Cycles[xs_] :> 
-	    Cycles[xs + Total[Length /@ symb[[;; i - 1]] - 1]], 
+   Flatten[Table[TensorSymmetries[symb[[i, 1]]] /. (h:Cycles | Symmetric | Antisymmetric)[xs_] :> 
+	    h[xs + Total[Length /@ symb[[;; i - 1]] - 1]], 
 	 {i, Length[symb]}], 
    1]
 ];
 TensorSymmetries[Contract[t_, pairs_]] := {#[[1]] /. n_Integer :> n - Length@Select[Flatten[pairs], # < n &], #[[2]]} & /@ 
 	Select[TensorSymmetries[t], Intersection[#[[1,1,1]], Flatten[pairs]] == {} &];
 	
-TensorSymmetries[TensorPermute[t_, perm_]] := {#[[1]] /. n_Integer :> perm[[n]], #[[2]]} & /@ TensorSymmetries[t];
+TensorSymmetries[TensorPermute[t_, perm_]] := TensorSymmetries[t] /. {
+  {Cycles[xs_], sign_} :> {Cycles[perm[[xs]]], sign},
+  Symmetric[xs_] :> Symmetric[Sort[perm[[xs]]]],
+  Antisymmetric[xs_] :> Antisymmetric[Sort[perm[[xs]]]]
+};
 
 
 SymmetryReduce[t_Tensor] := t;
@@ -306,7 +316,7 @@ SymmetryReduce[Contract[TensorPermute[t_, perm_], pairs_]] :=
      Cases[TensorSymmetries[t], {Cycles[xs_], sign_} /; 
         AllTrue[Flatten[xs], MemberQ[Keys[rules], #] &] :> {Cycles[
          xs /. rules], sign}]];
-   allperms = SymmetryPermutations[generators];
+   allperms = SymmetryPermutations[generators, "Minimal" -> False];
    minimal = 
     MinimalBy[allperms, perm[[PermutationList[#[[1]], ninds]]] &][[1]];
    minimal[[2]] Contract[
@@ -317,11 +327,14 @@ SymmetryReduce[TensorPermute[t_, perm_]] :=
   Module[{ninds, generators, allperms, minimal},
    ninds = Total[Length /@ Symbolic[t] - 1];
    generators = TensorSymmetries[t];
-   allperms = SymmetryPermutations[generators];
+   allperms = SymmetryPermutations[generators, "Minimal" -> False];
    minimal = 
     MinimalBy[allperms, perm[[PermutationList[#[[1]], ninds]]] &][[1]];
    minimal[[2]] TensorPermute[t, 
      perm[[PermutationList[minimal[[1]], ninds]]]]];
+
+SymmetryReduce[a_ b_] /; FreeQ[a, Alternatives @@ $TensorHeads] := a SymmetryReduce[b];
+SymmetryReduce[a_ + b_] := SymmetryReduce[a] + SymmetryReduce[b];
    
 BuildTensor[{names : (_List)..}] := 
   TensorProduct @@ (BuildTensor /@ {names});

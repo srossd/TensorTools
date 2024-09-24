@@ -41,19 +41,6 @@ StyleBox[\"indextype\",\nFontSlant->\"Italic\"]\).";
 Components::usage = "Components[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives the components of \!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\) as a SparseArray, with indices in the order they appear in the unpermuted form of tensor.";
-InactiveComponents::usage = "InactiveComponents[\!\(\*
-StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives the components of \!\(\*
-StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\) with tensor products left inactive.";
-TP::usage = "TP[\!\(\*
-StyleBox[\"t1\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\",\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\" \",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\"t2\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\",\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\" \",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\"...\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\"]\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\" \",\nFontSlant->\"Italic\"]\)is an inactive form of TensorProduct used by InactiveComponents.";
 
 Symbolic::usage = "Symbolic[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives the list of the symbols and indices appearing in \!\(\*
@@ -148,27 +135,6 @@ StyleBox[\"j\",\nFontSlant->\"Italic\"]\), ...}] can be set to the SparseArray o
 StyleBox[\"name\",\nFontSlant->\"Italic\"]\), \!\(\*
 StyleBox[\"i\",\nFontSlant->\"Italic\"]\), \!\(\*
 StyleBox[\"j\",\nFontSlant->\"Italic\"]\), ...}}].";
-
-Component::usage = "Component[\!\(\*
-StyleBox[\"name\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\"]\",\nFontSlant->\"Italic\"]\)[\!\(\*
-StyleBox[\"i\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\",\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\" \",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\"j\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\",\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\" \",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\"...\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\"]\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\" \",\nFontSlant->\"Italic\"]\)represents the component (\!\(\*
-StyleBox[\"i\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\",\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\" \",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\"j\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\",\",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\" \",\nFontSlant->\"Italic\"]\)\!\(\*
-StyleBox[\"...\",\nFontSlant->\"Italic\"]\)) of a generic tensor named \!\(\*
-StyleBox[\"name\",\nFontSlant->\"Italic\"]\).";
 
 SwapFactors::usage = "SwapFactors[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\), \!\(\*
