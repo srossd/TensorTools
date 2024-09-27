@@ -42,6 +42,10 @@ Components::usage = "Components[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives the components of \!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\) as a SparseArray, with indices in the order they appear in the unpermuted form of tensor.";
 
+InactiveComponents::usage = "InactiveComponents[\!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives the components of \!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\) with tensor products left inactive.";
+
 Symbolic::usage = "Symbolic[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives the list of the symbols and indices appearing in \!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\).";

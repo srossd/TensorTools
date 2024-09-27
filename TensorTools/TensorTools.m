@@ -269,7 +269,7 @@ Protect[SparseArray];
 
 TensorSymmetries[_] := {};
 Options[SymmetryPermutations] = {"Minimal" -> True};
-SymmetryPermutations[symmetries_, opt: OptionsPattern[]] := If[OptionValue["Minimal"],
+SymmetryPermutations[symmetries : Except[(_Symmetric | _Antisymmetric | {_Cycles, _Integer})], opt: OptionsPattern[]] := If[OptionValue["Minimal"],
    Join @@ (SymmetryPermutations[#, opt] & /@ symmetries),
    {PermutationProduct @@ #[[;;, 1]], Times @@ #[[;;, 2]]} & /@ Tuples[SymmetryPermutations[#, opt] & /@ symmetries]
 ];
@@ -278,13 +278,11 @@ SymmetryPermutations[symmetry: (_Symmetric | _Antisymmetric | {_Cycles, _Integer
     Table[{FindPermutation[xs, xs[[p]]] /. n_Integer :> xs[[n]], 1}, {p, Permutations@Range@Length[xs]}],
    Antisymmetric[xs_] :> 
     Table[{FindPermutation[xs, xs[[p]]] /. n_Integer :> xs[[n]], Signature[p]}, {p, Permutations@Range@Length[xs]}],
-   cycles_ :> 
-    Table[{PermutationProduct @@ s[[;; , 1]], 
-      Times @@ s[[;; , 2]]}, {s, Subsets[List @@ cycles]}]
+   cycles_ :> Table[{PermutationPower[cycles[[1]], n], cycles[[2]]^n}, {n, PermutationOrder[cycles[[1]]]}]
    }, {
   	Symmetric[xs_] :> Table[{Cycles[{xs[[i ;; i + 1]]}], 1}, {i, Length[xs] - 1}],
 	Antisymmetric[xs_] :> Table[{Cycles[{xs[[i ;; i + 1]]}], -1}, {i, Length[xs] - 1}],
-	cycles_ :> Table[{PermutationProduct @@ s[[;; , 1]], Times @@ s[[;; , 2]]}, {s, Subsets[cycles]}]
+	cycles_ :> {cycles}
    }];
 
 DeclareTensorSymmetry[name_, symmetry_] := (TensorSymmetries[name] = symmetry); 
@@ -299,7 +297,7 @@ TensorSymmetries[Contract[t_, pairs_]] := {#[[1]] /. n_Integer :> n - Length@Sel
 	Select[TensorSymmetries[t], Intersection[#[[1,1,1]], Flatten[pairs]] == {} &];
 	
 TensorSymmetries[TensorPermute[t_, perm_]] := TensorSymmetries[t] /. {
-  {Cycles[xs_], sign_} :> {Cycles[perm[[xs]]], sign},
+  {Cycles[xs_], sign_} :> {Cycles[Table[perm[[x]], {x, xs}]], sign},
   Symmetric[xs_] :> Symmetric[Sort[perm[[xs]]]],
   Antisymmetric[xs_] :> Antisymmetric[Sort[perm[[xs]]]]
 };
