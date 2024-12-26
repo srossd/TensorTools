@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      7370,        190]
-NotebookOptionsPosition[      5097,        136]
-NotebookOutlinePosition[      6949,        184]
-CellTagsIndexPosition[      6906,        181]
+NotebookDataLength[     17513,        478]
+NotebookOptionsPosition[     13628,        392]
+NotebookOutlinePosition[     15788,        448]
+CellTagsIndexPosition[     15703,        443]
 WindowTitle->Explicit
 WindowFrame->Normal*)
 
@@ -27,78 +27,106 @@ Cell[BoxData[GridBox[{
           TemplateBox[{12},
            "Spacer1"], Cell["TENSOR TOOLS SYMBOL", "PacletNameCell",
            TextAlignment->Center,ExpressionUUID->
-           "c3873fcc-4140-ea48-be92-690d4d3c9cdf"], 
+           "35b00b5a-7cb6-2140-ba1a-ce556320f3e8"], 
           TemplateBox[{8},
            "Spacer1"]}]],
          TextAlignment->Center,ExpressionUUID->
-         "88ac9c2d-37a4-9a47-a8ed-377e1cb0a9aa"],
+         "501cead6-b75c-1840-91cf-1a40d8e59128"],
         Background->RGBColor[0.490196, 0.576471, 0.690196],
         ItemSize->Full], ""}
      },
      GridBoxAlignment->{"Rows" -> {{Center}}},
      GridBoxItemSize->{"Columns" -> {Full, 
-         Scaled[0.02]}, "Rows" -> {{2.5}}}], Cell[TextData[Cell[BoxData[
-     TagBox[
-      ActionMenuBox[
-       FrameBox[Cell[TextData[{
-         "URL",
-         " ",
-         Cell[BoxData[
-          GraphicsBox[
-           {GrayLevel[0.66667], Thickness[0.13], 
-            LineBox[{{-1.8, 0.5}, {0, 0}, {1.8, 0.5}}]},
-           AspectRatio->1,
-           ImageSize->20,
-           PlotRange->{{-3, 4}, {-1, 1}}]],ExpressionUUID->
-          "a3b68e46-7dd0-5044-879a-2024d7c18b72"]
-        }],ExpressionUUID->"0b807db8-4f57-0b41-9116-68d3d63e19ff"],
-        StripOnInput->False],{
-       "\"TensorTools/ref/Explicit\"" :> None, 
-        "\"Copy Wolfram Documentation Center URL\"" :> 
-        Module[{DocumentationSearch`Private`nb$}, 
-          DocumentationSearch`Private`nb$ = 
-           NotebookPut[
-            Notebook[{Cell["TensorTools/ref/Explicit"]}, Visible -> False]]; 
-          SelectionMove[DocumentationSearch`Private`nb$, All, Notebook]; 
-          FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"]; 
-          NotebookClose[DocumentationSearch`Private`nb$]; Null], Delimiter, 
-        "\"Copy web URL\"" :> 
-        Module[{DocumentationSearch`Private`nb$}, 
-          DocumentationSearch`Private`nb$ = 
-           NotebookPut[
-            Notebook[{
-              Cell[BoxData[
-                MakeBoxes[
-                 Hyperlink[
-                  "http://reference.wolfram.com/language/TensorTools/ref/\
+         Scaled[0.02]}, "Rows" -> {{2.5}}}], Cell[TextData[{
+     Cell[BoxData[
+      TagBox[
+       ActionMenuBox[
+        FrameBox[Cell[TextData[{
+          "See Also",
+          " ",
+          Cell[BoxData[
+           GraphicsBox[
+            {GrayLevel[0.66667], Thickness[0.13], 
+             LineBox[{{-1.8, 0.5}, {0, 0}, {1.8, 0.5}}]},
+            AspectRatio->1,
+            ImageSize->20,
+            PlotRange->{{-3, 4}, {-1, 1}}]],ExpressionUUID->
+           "9b564bbb-5440-754c-8963-14c7b4a465e0"]
+         }],ExpressionUUID->"480aab6e-4806-cf4f-8cd4-dd7b42eb491a"],
+         StripOnInput->False],{
+        "\"AddExplicitRule\"" :> 
+         Documentation`HelpLookup["paclet:TensorTools/ref/AddExplicitRule"]},
+        Appearance->None,
+        MenuAppearance->Automatic,
+        MenuStyle->"SeeAlso"],
+       MouseAppearanceTag["LinkHand"]]],
+      LineSpacing->{1.4, 0},ExpressionUUID->
+      "347d978b-987e-7d41-a0dc-8923cd73025e"],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      TagBox[
+       ActionMenuBox[
+        FrameBox[Cell[TextData[{
+          "URL",
+          " ",
+          Cell[BoxData[
+           GraphicsBox[
+            {GrayLevel[0.66667], Thickness[0.13], 
+             LineBox[{{-1.8, 0.5}, {0, 0}, {1.8, 0.5}}]},
+            AspectRatio->1,
+            ImageSize->20,
+            PlotRange->{{-3, 4}, {-1, 1}}]],ExpressionUUID->
+           "ece1f615-b544-fb46-b934-0634e23193cf"]
+         }],ExpressionUUID->"49e9c09d-7753-fb47-a9db-cf35d8b5128f"],
+         StripOnInput->False],{
+        "\"TensorTools/ref/Explicit\"" :> None, 
+         "\"Copy Wolfram Documentation Center URL\"" :> 
+         Module[{DocumentationSearch`Private`nb$}, 
+           DocumentationSearch`Private`nb$ = 
+            NotebookPut[
+             Notebook[{Cell["TensorTools/ref/Explicit"]}, Visible -> False]]; 
+           SelectionMove[DocumentationSearch`Private`nb$, All, Notebook]; 
+           FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"]; 
+           NotebookClose[DocumentationSearch`Private`nb$]; Null], Delimiter, 
+         "\"Copy web URL\"" :> 
+         Module[{DocumentationSearch`Private`nb$}, 
+           DocumentationSearch`Private`nb$ = 
+            NotebookPut[
+             Notebook[{
+               Cell[BoxData[
+                 MakeBoxes[
+                  Hyperlink[
+                   "http://reference.wolfram.com/language/TensorTools/ref/\
 Explicit.html"], StandardForm]], "Input", TextClipboardType -> "PlainText"]}, 
-              Visible -> False]]; 
-          SelectionMove[DocumentationSearch`Private`nb$, All, Notebook]; 
-          FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"]; 
-          NotebookClose[DocumentationSearch`Private`nb$]; Null], 
-        "\"Go to web URL\"" :> 
-        FrontEndExecute[{
-          NotebookLocate[{
-            URL[If[TrueQ[False], 
-                "http://reference.wolfram.com/system-modeler/", 
-                "http://reference.wolfram.com/language/"] <> 
-              "TensorTools/ref/Explicit" <> ".html"], None}]}]},
-       Appearance->None,
-       MenuAppearance->Automatic,
-       MenuStyle->"URLMenu"],
-      MouseAppearanceTag["LinkHand"]]],
-     LineSpacing->{1.4, 0},ExpressionUUID->
-     "651001e6-3db8-ec4c-90bc-c6102021e37e"]], "AnchorBar",
+               Visible -> False]]; 
+           SelectionMove[DocumentationSearch`Private`nb$, All, Notebook]; 
+           FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"]; 
+           NotebookClose[DocumentationSearch`Private`nb$]; Null], 
+         "\"Go to web URL\"" :> 
+         FrontEndExecute[{
+           NotebookLocate[{
+             URL[If[TrueQ[False], 
+                 "http://reference.wolfram.com/system-modeler/", 
+                 "http://reference.wolfram.com/language/"] <> 
+               "TensorTools/ref/Explicit" <> ".html"], None}]}]},
+        Appearance->None,
+        MenuAppearance->Automatic,
+        MenuStyle->"URLMenu"],
+       MouseAppearanceTag["LinkHand"]]],
+      LineSpacing->{1.4, 0},ExpressionUUID->
+      "b4484e3f-0501-ff45-b55f-a9fd7bdaa3d0"]
+    }], "AnchorBar",
      CacheGraphics->False,ExpressionUUID->
-     "1556a415-c9e3-b841-9ada-98731ace7f92"]}
+     "cb0581af-e9c9-224d-b81d-ac2ec279789c"]}
   }]], "AnchorBarGrid",
  GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
      Scaled[0.65], {
       Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
    "RowsIndexed" -> {}}},
- CellID->1,ExpressionUUID->"51079822-d7aa-9f4f-8d67-3c415789b0ef"],
+ CellID->1,ExpressionUUID->"61842940-23d8-a443-85ae-7bc3b5f50e9f"],
 
-Cell["TensorTools`", "ContextNameCell",ExpressionUUID->"7f0d9cf1-f05f-da4f-b46c-21d791257fb9"],
+Cell["TensorTools`", "ContextNameCell",ExpressionUUID->"9be8c7d1-5ca3-d546-8f4b-2dc676f872e7"],
 
 Cell[CellGroupData[{
 
@@ -106,33 +134,261 @@ Cell[BoxData[GridBox[{
    {Cell[TextData[{
      Cell[
      "Explicit", "ObjectName",ExpressionUUID->
-      "06c6205b-a9fa-8c46-9d75-03c5d6d2b397"],
+      "fe94499f-6dd0-6e44-af01-486c201c298d"],
      Cell[BoxData[
       TemplateBox[{8},
-       "Spacer1"]],ExpressionUUID->"5b02079a-7e4b-4549-b7fb-47ca4482658f"],
+       "Spacer1"]],ExpressionUUID->"5167d2f0-3949-1d40-8a12-be99018b9a60"],
      Cell[BoxData[
      ""], "ObjectNameTranslation",ExpressionUUID->
-      "f29da37f-27b5-fa4f-84b5-48ab989c16a8"]
-    }],ExpressionUUID->"72fbf174-5781-e747-9205-aa71c82824f3"], 
+      "f67287b5-f131-ba41-930d-9e6c7f2ea9f5"]
+    }],ExpressionUUID->"83a74585-33af-7348-a804-4a0be25bb9c0"], 
     "\[SpanFromLeft]"}
-  }]], "ObjectNameGrid",ExpressionUUID->"d548bbe9-0850-4547-980c-\
-1dd314eddfd6"],
+  }]], "ObjectNameGrid",ExpressionUUID->"06ac1fb0-227b-f94c-8693-\
+6b16caab12a2"],
 
 Cell[BoxData[GridBox[{
    {"", Cell[TextData[{
      Cell[BoxData[
-      RowBox[{"Explicit", "[", 
+      RowBox[{
+       ButtonBox["Explicit",
+        BaseStyle->"Hyperlink",
+        ButtonData->"TensorTools/ref/Explicit"], "[", 
        StyleBox["expr",
         FontSlant->"Italic"], "]"}]], "InlineFormula",
       FontFamily->"Source Sans Pro",ExpressionUUID->
       "b8b589b7-4b1b-49ec-9ccb-0bfb88af95e2"],
-     " \[LineSeparator]"
-    }],ExpressionUUID->"7b9c7cbe-834b-5543-93c8-e252b09dc495"]}
+     " \[LineSeparator]applies any rules declared using ",
+     ButtonBox["AddExplicitRule",
+      BaseStyle->"Hyperlink",
+      ButtonData->"TensorTools/ref/AddExplicitRule"],
+     " to ",
+     StyleBox["expr",
+      FontSlant->"Italic"],
+     "."
+    }],ExpressionUUID->"d05b1ce6-15f4-484a-b20e-a7f349f0f0d1"]}
   }]], "Usage",
  CellID->982511436,ExpressionUUID->"b29816d3-d982-4f89-82df-7f69057e2de1"]
 }, Open  ]],
 
-Cell[" ", "FooterCell",ExpressionUUID->"02abd367-007f-d643-9b62-69976a6a31ee"]
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ Cell[BoxData[
+  DynamicBox[ToBoxes[
+    If[
+     MatchQ[
+      CurrentValue[
+       EvaluationNotebook[], {
+       TaggingRules, "Openers", "PrimaryExamplesSection"}, Open], 
+      Alternatives[True, Open]], 
+     Style[
+      Graphics[{
+        Thickness[0.18], 
+        RGBColor[0.8509803921568627, 0.396078431372549, 0], 
+        Line[{{-1.8, 0.5}, {0, 0}, {1.8, 0.5}}]}, AspectRatio -> 1, 
+       PlotRange -> {{-3, 4}, {-1, 1}}, ImageSize -> 20], Magnification -> 
+      0.68 Inherited], 
+     Rotate[
+      Style[
+       Graphics[{
+         Thickness[0.18], 
+         RGBColor[0.8509803921568627, 0.396078431372549, 0], 
+         Line[{{-1.8, 0.5}, {0, 0}, {1.8, 0.5}}]}, AspectRatio -> 1, 
+        PlotRange -> {{-3, 4}, {-1, 1}}, ImageSize -> 20], Magnification -> 
+       0.68 Inherited], Rational[1, 2] Pi, {-1.65, -1}]]],
+   ImageSizeCache->{13.600000000000001`, {5., 8.600000000000001}}]],
+  ExpressionUUID->"9111c5fd-f53e-ef4b-a5b0-03d5e6ac65f3"],
+ Cell[BoxData[
+  TemplateBox[{1},
+   "Spacer1"]],ExpressionUUID->"2cccdd91-e6e1-304b-8dbc-1e6a649afa62"],
+ "Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount",ExpressionUUID->
+  "6790e0ea-4c43-784b-a4e3-92b3013556cd"]
+}], "PrimaryExamplesSection",
+ WholeCellGroupOpener->True,
+ CacheGraphics->False,
+ CellTags->"PrimaryExamplesSection",
+ CellID->101878039,ExpressionUUID->"1b4e86ed-0def-6745-9b41-b1abcca13521"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ Cell[BoxData[
+  DynamicBox[ToBoxes[
+    If[
+     MatchQ[
+      CurrentValue[
+       EvaluationNotebook[], {TaggingRules, "Openers", "ExampleSection", "0"},
+        Closed], 
+      Alternatives[Open, True]], 
+     Style[
+      Graphics[{
+        Thickness[0.18], 
+        RGBColor[0.8509803921568627, 0.396078431372549, 0], 
+        Line[{{-1.8, 0.5}, {0, 0}, {1.8, 0.5}}]}, AspectRatio -> 1, 
+       PlotRange -> {{-3, 4}, {-1, 1}}, ImageSize -> 20], Magnification -> 
+      0.68 Inherited], 
+     Rotate[
+      Style[
+       Graphics[{
+         Thickness[0.18], 
+         RGBColor[0.8509803921568627, 0.396078431372549, 0], 
+         Line[{{-1.8, 0.5}, {0, 0}, {1.8, 0.5}}]}, AspectRatio -> 1, 
+        PlotRange -> {{-3, 4}, {-1, 1}}, ImageSize -> 20], Magnification -> 
+       0.68 Inherited], Rational[1, 2] Pi, {-1.65, -1}]]],
+   ImageSizeCache->{13.600000000000001`, {5., 8.600000000000001}}]],
+  ExpressionUUID->"08a04ade-3b40-534d-8973-0e425246a2c1"],
+ Cell[BoxData[
+  TemplateBox[{1},
+   "Spacer1"]],ExpressionUUID->"aac81f43-8c89-514f-8bb0-fb377805a556"],
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount",ExpressionUUID->
+  "62db3295-4970-e143-b1b4-023e697ae0ed"]
+}], "ExampleSection", "ExampleSection",
+ WholeCellGroupOpener->True,
+ CacheGraphics->False,
+ CellID->99692034,ExpressionUUID->"46a82c61-742b-cc4a-9bfb-fab8c353ee7e"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"AddExplicitRule", "[", 
+   RowBox[{"xsq", "->", 
+    RowBox[{"Sum", "[", 
+     RowBox[{
+      SuperscriptBox[
+       RowBox[{"x", "[", "i", "]"}], "2"], ",", 
+      RowBox[{"{", 
+       RowBox[{"i", ",", "3"}], "}"}]}], "]"}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Explicit", "[", "xsq", "]"}]}], "Input",
+ CellLabel->"In[1]:=",
+ CellID->124214065,ExpressionUUID->"565a9894-b240-bb4f-b3b6-28492c4d6c99"],
+
+Cell[BoxData[
+ RowBox[{
+  SuperscriptBox[
+   RowBox[{"x", "[", "1", "]"}], "2"], "+", 
+  SuperscriptBox[
+   RowBox[{"x", "[", "2", "]"}], "2"], "+", 
+  SuperscriptBox[
+   RowBox[{"x", "[", "3", "]"}], "2"]}]], "Output",
+ CellLabel->"Out[1]=",
+ CellID->435179583,ExpressionUUID->"7274d1a8-4ed1-6f45-9bdd-0f364700aae4"]
+}, Open  ]],
+
+Cell[TextData[{
+ ButtonBox["Components",
+  BaseStyle->"Hyperlink",
+  ButtonData->"TensorTools/ref/Components"],
+ " will apply Explicit to scalars multiplying tensors:"
+}], "ExampleText",
+ CellID->97065196,ExpressionUUID->"ebc4d852-9bda-9441-95ce-446a608c3735"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"IndexData", "[", "SO3", "]"}], "=", 
+   RowBox[{"Index", "[", 
+    RowBox[{"3", ",", "\"\<Latin\>\""}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"id", "=", 
+   RowBox[{"Tensor", "[", 
+    RowBox[{"{", 
+     RowBox[{"{", 
+      RowBox[{"\"\<I\>\"", ",", 
+       RowBox[{"Lowered", "[", "SO3", "]"}], ",", 
+       RowBox[{"Lowered", "[", "SO3", "]"}]}], "}"}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"BuildTensor", "[", 
+     RowBox[{"{", 
+      RowBox[{"\"\<I\>\"", ",", 
+       RowBox[{"Lowered", "[", "SO3", "]"}], ",", 
+       RowBox[{"Lowered", "[", "SO3", "]"}]}], "}"}], "]"}], "=", 
+    RowBox[{"IdentityMatrix", "[", "3", "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Normal", "@", 
+   RowBox[{"Components", "[", 
+    RowBox[{"xsq", " ", "id"}], "]"}]}], "//", "MatrixForm"}]}], "Input",
+ CellLabel->"In[2]:=",
+ CellID->69734812,ExpressionUUID->"0e24a762-a5df-f048-add9-dc412e9d6be1"],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {
+      RowBox[{
+       SuperscriptBox[
+        RowBox[{"x", "[", "1", "]"}], "2"], "+", 
+       SuperscriptBox[
+        RowBox[{"x", "[", "2", "]"}], "2"], "+", 
+       SuperscriptBox[
+        RowBox[{"x", "[", "3", "]"}], "2"]}], "0", "0"},
+     {"0", 
+      RowBox[{
+       SuperscriptBox[
+        RowBox[{"x", "[", "1", "]"}], "2"], "+", 
+       SuperscriptBox[
+        RowBox[{"x", "[", "2", "]"}], "2"], "+", 
+       SuperscriptBox[
+        RowBox[{"x", "[", "3", "]"}], "2"]}], "0"},
+     {"0", "0", 
+      RowBox[{
+       SuperscriptBox[
+        RowBox[{"x", "[", "1", "]"}], "2"], "+", 
+       SuperscriptBox[
+        RowBox[{"x", "[", "2", "]"}], "2"], "+", 
+       SuperscriptBox[
+        RowBox[{"x", "[", "3", "]"}], "2"]}]}
+    },
+    GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellLabel->"Out[2]//MatrixForm=",
+ CellID->291379255,ExpressionUUID->"3923ee61-a5e4-8042-ae88-d23de5467cb7"]
+}, Open  ]]
+}, Dynamic[CurrentValue[
+ EvaluationNotebook[], {TaggingRules, "Openers", "ExampleSection", "0"}, 
+  Closed]]]]
+}, Dynamic[CurrentValue[
+ EvaluationNotebook[], {TaggingRules, "Openers", "PrimaryExamplesSection"}, 
+  Closed]]]],
+
+Cell[BoxData[GridBox[{
+   {
+    DynamicBox[FEPrivate`ImportImage[
+      FrontEnd`FileName[{"Documentation", "FooterIcons"}, 
+       "RelatedFunction.png"]],
+     ImageSizeCache->{50., {27., 33.}}], GridBox[{
+      {
+       StyleBox[
+        RowBox[{"See", " ", "Also"}], "SeeAlsoSection"]},
+      {Cell[TextData[ButtonBox["AddExplicitRule",
+        BaseStyle->"Hyperlink",
+        ButtonData->"TensorTools/ref/AddExplicitRule"]], "SeeAlso",
+        ExpressionUUID->"2d32303b-85ba-4620-a68c-126a4ec8f34d"]}
+     }]}
+  }]], "SeeAlsoSection",ExpressionUUID->"b527eac6-8441-4c42-8a1f-\
+89b8a688d514"],
+
+Cell[" ", "FooterCell",ExpressionUUID->"d164822a-c938-cf49-9d80-12edd2929584"]
 },
 Saveable->False,
 ScreenStyleEnvironment->"Working",
@@ -148,15 +404,16 @@ TaggingRules->{
   "CitationPopupData" -> $Failed, "ShowCitation" -> False, "HasOptions" -> 
   True, "RootCaptions" -> "", "HeaderCoreAreaLink" -> {}, 
   "Metadata" -> {
-   "built" -> "{2024, 9, 24, 16, 4, 54.3353439}", 
+   "built" -> "{2024, 12, 26, 8, 32, 45.7634860}", 
     "history" -> {"0.0", "", "", ""}, "context" -> "TensorTools`", 
     "keywords" -> {}, "specialkeywords" -> {}, 
     "tutorialcollectionlinks" -> {}, "index" -> True, "label" -> 
     "Tensor Tools Symbol", "language" -> "en", "paclet" -> "TensorTools", 
-    "status" -> "None", "summary" -> "Explicit[expr] ", "synonyms" -> {}, 
-    "tabletags" -> {}, "title" -> "Explicit", "titlemodifier" -> "", 
-    "metadescription" -> "", "windowtitle" -> "Explicit", "type" -> "Symbol", 
-    "uri" -> "TensorTools/ref/Explicit"}},
+    "status" -> "None", "summary" -> 
+    "Explicit[expr] applies any rules declared using AddExplicitRule to \
+expr.", "synonyms" -> {}, "tabletags" -> {}, "title" -> "Explicit", 
+    "titlemodifier" -> "", "metadescription" -> "", "windowtitle" -> 
+    "Explicit", "type" -> "Symbol", "uri" -> "TensorTools/ref/Explicit"}},
 CellContext->"Global`",
 FrontEndVersion->"14.0 for Microsoft Windows (64-bit) (December 12, 2023)",
 StyleDefinitions->Notebook[{
@@ -170,28 +427,59 @@ StyleDefinitions->Notebook[{
   FrontEndVersion -> 
   "14.0 for Microsoft Windows (64-bit) (December 12, 2023)", StyleDefinitions -> 
   "Default.nb"],
-ExpressionUUID->"a7cc46fc-d34f-8146-96b7-0c3a9384294b"
+ExpressionUUID->"545a7a43-c232-8e48-abaa-bb3e71a4f68a"
 ]
 (* End of Notebook Content *)
 
 (* Internal cache information *)
 (*CellTagsOutline
-CellTagsIndex->{}
+CellTagsIndex->{
+ "PrimaryExamplesSection"->{
+  Cell[6399, 174, 1420, 37, 35, "PrimaryExamplesSection",ExpressionUUID->"1b4e86ed-0def-6745-9b41-b1abcca13521",
+   CellTags->"PrimaryExamplesSection",
+   CellID->101878039]}
+ }
 *)
 (*CellTagsIndex
-CellTagsIndex->{}
+CellTagsIndex->{
+ {"PrimaryExamplesSection", 15504, 436}
+ }
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[580, 21, 3288, 77, 70, "AnchorBarGrid",ExpressionUUID->"51079822-d7aa-9f4f-8d67-3c415789b0ef",
+Cell[580, 21, 4327, 105, 56, "AnchorBarGrid",ExpressionUUID->"61842940-23d8-a443-85ae-7bc3b5f50e9f",
  CellID->1],
-Cell[3871, 100, 94, 0, 70, "ContextNameCell",ExpressionUUID->"7f0d9cf1-f05f-da4f-b46c-21d791257fb9"],
+Cell[4910, 128, 94, 0, 23, "ContextNameCell",ExpressionUUID->"9be8c7d1-5ca3-d546-8f4b-2dc676f872e7"],
 Cell[CellGroupData[{
-Cell[3990, 104, 551, 14, 70, "ObjectNameGrid",ExpressionUUID->"d548bbe9-0850-4547-980c-1dd314eddfd6"],
-Cell[4544, 120, 456, 11, 70, "Usage",ExpressionUUID->"b29816d3-d982-4f89-82df-7f69057e2de1",
+Cell[5029, 132, 551, 14, 56, "ObjectNameGrid",ExpressionUUID->"06ac1fb0-227b-f94c-8693-6b16caab12a2"],
+Cell[5583, 148, 779, 21, 113, "Usage",ExpressionUUID->"b29816d3-d982-4f89-82df-7f69057e2de1",
  CellID->982511436]
 }, Open  ]],
-Cell[5015, 134, 78, 0, 70, "FooterCell",ExpressionUUID->"02abd367-007f-d643-9b62-69976a6a31ee"]
+Cell[CellGroupData[{
+Cell[6399, 174, 1420, 37, 35, "PrimaryExamplesSection",ExpressionUUID->"1b4e86ed-0def-6745-9b41-b1abcca13521",
+ CellTags->"PrimaryExamplesSection",
+ CellID->101878039],
+Cell[CellGroupData[{
+Cell[7844, 215, 1397, 36, 30, "ExampleSection",ExpressionUUID->"46a82c61-742b-cc4a-9bfb-fab8c353ee7e",
+ CellID->99692034],
+Cell[CellGroupData[{
+Cell[9266, 255, 454, 13, 45, "Input",ExpressionUUID->"565a9894-b240-bb4f-b3b6-28492c4d6c99",
+ CellID->124214065],
+Cell[9723, 270, 317, 9, 36, "Output",ExpressionUUID->"7274d1a8-4ed1-6f45-9bdd-0f364700aae4",
+ CellID->435179583]
+}, Open  ]],
+Cell[10055, 282, 260, 6, 38, "ExampleText",ExpressionUUID->"ebc4d852-9bda-9441-95ce-446a608c3735",
+ CellID->97065196],
+Cell[CellGroupData[{
+Cell[10340, 292, 1060, 31, 87, "Input",ExpressionUUID->"0e24a762-a5df-f048-add9-dc412e9d6be1",
+ CellID->69734812],
+Cell[11403, 325, 1302, 39, 83, "Output",ExpressionUUID->"3923ee61-a5e4-8042-ae88-d23de5467cb7",
+ CellID->291379255]
+}, Open  ]]
+}, Dynamic[CurrentValue[EvaluationNotebook[], {TaggingRules, "Openers", "ExampleSection", "0"}, Closed]]]]
+}, Dynamic[CurrentValue[EvaluationNotebook[], {TaggingRules, "Openers", "PrimaryExamplesSection"}, Closed]]]],
+Cell[12947, 373, 596, 15, 114, "SeeAlsoSection",ExpressionUUID->"b527eac6-8441-4c42-8a1f-89b8a688d514"],
+Cell[13546, 390, 78, 0, 25, "FooterCell",ExpressionUUID->"d164822a-c938-cf49-9d80-12edd2929584"]
 }
 ]
 *)
