@@ -74,7 +74,7 @@ Components[t_] :=
  Activate[
    InactiveComponents[t /. TensorProduct -> Distribute@*TP] /. 
     TP -> Inactive[TensorProduct] /. TensorProduct -> TP //. 
-  	  TP[x__, y_, z___] | TP[x___, y_, z__] /; ! ArrayQ[y] && !ListQ[y] && FreeQ[y, Alternatives @@ $TensorHeads] :> y TP[x, z] /. 
+  	  Inactive[TP][x__, y_, z___] | Inactive[TP][x___, y_, z__] /; ! ArrayQ[y] && !ListQ[y] && FreeQ[y, Alternatives @@ $TensorHeads] :> y TP[x, z] /. 
         TP -> Inactive[TensorProduct]]
 
 If[Head[explicitRules] === Symbol, explicitRules = {}];
