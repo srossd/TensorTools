@@ -73,9 +73,9 @@ SetAttributes[TP, Flat];
 Components[t_] := 
  Activate[
    InactiveComponents[t /. TensorProduct -> Distribute@*TP] /. 
-    TP -> Inactive[TensorProduct]] /. TensorProduct -> TP //. 
+    TP -> Inactive[TensorProduct] /. TensorProduct -> TP //. 
   	  TP[x__, y_, z___] | TP[x___, y_, z__] /; ! ArrayQ[y] && !ListQ[y] && FreeQ[y, Alternatives @@ $TensorHeads] :> y TP[x, z] /. 
-        TP -> TensorProduct
+        TP -> Inactive[TensorProduct]]
 
 If[Head[explicitRules] === Symbol, explicitRules = {}];
 AddExplicitRule[rule_] := AppendTo[explicitRules, rule];
