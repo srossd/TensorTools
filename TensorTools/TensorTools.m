@@ -681,6 +681,39 @@ KroneckerReduce[a_ + b_, offset_ : 1] :=
   KroneckerReduce[a, offset] + KroneckerReduce[b, offset];
 Tensor[{}] = 1;
 
+SetAttributes[TensorInterpret, {HoldFirst, Listable}];
+TensorInterpret[expr_Plus] := TensorInterpret /@ expr;
+TensorInterpret[a_ b_] /; 
+   FreeQ[a, Alternatives @@ TensorTools`Private`$TensorHeads] := 
+  a TensorInterpret[b];
+
+TensorInterpret::pos = 
+  "Positive indices should be unique integers 1..n";
+TensorInterpret::neg = 
+  "Negative indices should come in pairs of integers -1..-n";
+TensorInterpret[expr_] := 
+ Module[{held, heads, nums, pairs, pos, neg, perm},
+  held = Hold[expr];
+  heads = held /. {Times -> List, h_[___Integer] :> h};
+  nums = Cases[held, _Integer, {3}];
+  neg = Select[nums, # < 0 &];
+  pairs = Position[nums, #][[;; , 1]] & /@ DeleteDuplicates[neg];
+  pos = Select[nums, # > 0 &];
+  perm = InversePermutation@Ordering[Select[nums, # > 0 &]];
+  Which[Length[pos] > 
+     0 && (Length[pos] != Length[DeleteDuplicates[pos]] || 
+      Max[pos] != Length[pos] || ! AllTrue[pos, MatchQ[#, _Integer] &]),
+   Message[TensorInterpret::pos],
+   Length[neg] > 
+     0 && (! AllTrue[pairs, Length[#] == 2 &] || ! AllTrue[neg, MatchQ[#, _Integer] &] || 
+      Min[neg] != -Length[neg]/2),
+   Message[TensorInterpret::neg],
+   True,
+   TensorPermute[Contract[TensorProduct @@ ReleaseHold[heads], pairs],
+     perm]
+   ]
+  ]
+
 End[]
 
 EndPackage[]
