@@ -270,5 +270,8 @@ StyleBox[\(\!\(\*
 StyleBox[\"i\",\nFontSlant->\"Italic\"]\)th\)] factor from \!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\).";
 
+TensorInterpret::usage = "TensorInterpret[\!\(\*
+StyleBox[\"expr\",\nFontSlant->\"Italic\"]\)] interprets a convenient shorthand for tensor expressions"
+
 
 EndPackage[]
