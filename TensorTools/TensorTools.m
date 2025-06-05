@@ -717,8 +717,8 @@ TensorInterpret::neg =
 TensorInterpret[expr_] := 
  Module[{held, heads, nums, pairs, pos, neg, perm},
   held = Hold[expr];
-  heads = held /. {Times -> List, h_[___Integer] :> h};
-  nums = Cases[held, _Integer, {3}];
+  heads = If[held[[1,0]] === Times, Identity, List][held /. {Times -> List, h_[___Integer] :> h}];
+  nums = Cases[held, _Integer, {If[held[[1,0]] === Times, 3, 2]}];
   neg = Select[nums, # < 0 &];
   pairs = Position[nums, #][[;; , 1]] & /@ DeleteDuplicates[neg];
   pos = Select[nums, # > 0 &];
