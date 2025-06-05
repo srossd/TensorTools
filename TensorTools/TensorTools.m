@@ -340,13 +340,15 @@ BuildTensor[{names : (_List)..}] :=
 Kronecker[idx_] := Tensor[{{"\[Delta]", Raised[idx], Lowered[idx]}}];
 BuildTensor[{"\[Delta]", Raised[idx_], Lowered[idx_]}] := SparseArray[IdentityMatrix[IndexData[idx][[1]]]];
  
+CanonicallyOrderedComponents::incommensurate = "The terms of `` are incommensurate";
 CanonicallyOrderedComponents[t_] /; MatchQ[t, Alternatives @@ (Blank /@ $TensorHeads)] := TensorTranspose[Components[t], InversePermutation[Ordering@Indices[t]]];
 
 CanonicallyOrderedComponents[a_ b_, opt : OptionsPattern[]] /; FreeQ[a, Alternatives @@ $TensorHeads] := Explicit[a] CanonicallyOrderedComponents[b, opt];
 CanonicallyOrderedComponents[a_, opt : OptionsPattern[]] /; FreeQ[a, Alternatives @@ $TensorHeads] := Explicit[a];
    
-CanonicallyOrderedComponents[Plus[a_, rest__]] := With[{allterms = List @@ Expand[Plus[a, rest]]},
-	Total[CanonicallyOrderedComponents[#] & /@ allterms]
+CanonicallyOrderedComponents[expr : Plus[a_, rest__]] := With[{allterms = List @@ Expand[expr]},
+    If[! SameQ @@ (Indices /@ allterms), Message[CanonicallyOrderedComponents::incommensurate, expr],
+	Total[CanonicallyOrderedComponents[#] & /@ allterms]]
 ];
 
 subpermute[perm_, start_, n_] := 
@@ -682,10 +684,31 @@ KroneckerReduce[a_ + b_, offset_ : 1] :=
 Tensor[{}] = 1;
 
 SetAttributes[TensorInterpret, {HoldFirst, Listable}];
-TensorInterpret[expr_Plus] := TensorInterpret /@ expr;
+TensorInterpret[expr_Plus] := Module[{held},
+   held = Hold[expr];
+   ReleaseHold[Replace[held, x_ :> TensorInterpret[x], {2}]]
+];
 TensorInterpret[a_ b_] /; 
    FreeQ[a, Alternatives @@ TensorTools`Private`$TensorHeads] := 
   a TensorInterpret[b];
+  
+TensorInterpret::nonpr = "Cannot assign to non-primitive tensor ``";
+TensorInterpret::incommensurate = "LHS `` is not commensurate with RHS ``";
+TensorInterpret[expr_Set] := Module[{held, head, rhs, perm, rhsIndices}, 
+   held = Hold[expr];
+   head = ReleaseHold[held /. HoldPattern[h_[___] = _] :> h];
+   perm = ReleaseHold[held /. HoldPattern[h_[xs___Integer] = _] :> {xs}];
+   rhs  = ReleaseHold[held /. HoldPattern[_ = b_] :> TensorInterpret[b]];
+   rhsIndices = Indices@Last@Cases[rhs, (Alternatives @@ $TensorHeads)[___], {0,2}];
+   Which[
+    ContractedPairs[head] != {} || Length[Symbolic[head]] > 1, 
+    	Message[TensorInterpret::nonpr, TraditionalForm[head]], 
+ 	Sort[Indices[head]] != Sort[rhsIndices], 
+    	Message[TensorInterpret::incommensurate, TraditionalForm[head], TraditionalForm[rhs]], 
+    True, 
+    	BuildTensor[Symbolic[head][[1]]] = TensorTranspose[CanonicallyOrderedComponents[rhs], FindPermutation[Sort[rhsIndices], Indices[head][[perm]]]];
+    ]
+ ];
 
 TensorInterpret::pos = 
   "Positive indices should be unique integers 1..n";
