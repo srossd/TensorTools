@@ -347,7 +347,7 @@ CanonicallyOrderedComponents[a_ b_, opt : OptionsPattern[]] /; FreeQ[a, Alternat
 CanonicallyOrderedComponents[a_, opt : OptionsPattern[]] /; FreeQ[a, Alternatives @@ $TensorHeads] := Explicit[a];
    
 CanonicallyOrderedComponents[expr : Plus[a_, rest__]] := With[{allterms = List @@ Expand[expr]},
-    If[! SameQ @@ (Indices /@ allterms), Message[CanonicallyOrderedComponents::incommensurate, expr],
+    If[! SameQ @@ (Sort@*Indices /@ allterms), Message[CanonicallyOrderedComponents::incommensurate, expr],
 	Total[CanonicallyOrderedComponents[#] & /@ allterms]]
 ];
 
