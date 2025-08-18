@@ -9,7 +9,7 @@ Begin["`Private`"]
 (* Implementation of the package *)
 
 $TensorHeads = {Tensor, TensorPermute, Contract, TP};
-AddTensorHead[head_] := If[!MemberQ[$TensorHeads, head], AppendTo[$TensorHeads, head]];
+AddTensorHead[head_Symbol] := If[!MemberQ[$TensorHeads, head], AppendTo[$TensorHeads, head]];
 
 Index[dim_, alphabet_] := Index[dim, alphabet, 1];
 Index[dim_, alphabet_, offset_] := Index[dim, alphabet, offset, Identity];
@@ -64,6 +64,8 @@ InactiveComponents[Tensor[names_]] /; Length[names] > 1 :=
 Indices[Tensor[names_]] := Join @@ (Rest /@ names);
 TensorPermutation[t_Tensor] := Range@Length[Indices[t]];
 TensorPermutation[a_ b_] /; FreeQ[a, Alternatives @@ $TensorHeads] := TensorPermutation[b];
+TensorPermutation[a_] /; FreeQ[a, Alternatives @@ $TensorHeads] := {};
+
 ContractedPairs[t_Tensor] := {};
 
 Indices[a_ b_] /; FreeQ[a, Alternatives @@ $TensorHeads] := Indices[b];
@@ -72,9 +74,9 @@ Indices[a_] /; FreeQ[a, Alternatives @@ $TensorHeads] := {};
 SetAttributes[TP, Flat];
 Components[t_] := 
  Activate[
-   InactiveComponents[t /. TensorProduct -> Distribute@*TP] /. 
+   InactiveComponents[t /. TensorProduct -> Distribute@*TP] /. Times -> Inactive[Times] /. 
     TP -> Inactive[TensorProduct] /. TensorProduct -> TP //. 
-  	  Inactive[TP][x__, y_, z___] | Inactive[TP][x___, y_, z__] /; ! ArrayQ[y] && !ListQ[y] && FreeQ[y, Alternatives @@ $TensorHeads] :> y TP[x, z] /. 
+  	  Inactive[TP][x__, y_, z___] | Inactive[TP][x___, y_, z__] /; ! ArrayQ[y] && !ListQ[y] && FreeQ[y, Alternatives @@ $TensorHeads] :> Inactive[Times][y, TP[x, z]] /. 
         TP -> Inactive[TensorProduct]]
 
 If[Head[explicitRules] === Symbol, explicitRules = {}];
@@ -234,14 +236,13 @@ TensorPermutation[TensorPermute[t_, perm_, OptionsPattern[]]] :=
   TensorPermutation[t][[perm]];
 TensorPermute[t_, perm_List, OptionsPattern[]] /; OrderedQ[perm] := 
   t;
-TensorPermute[TensorPermute[t_, p1_], p2_] := 
-  TensorPermute[t, p1[[p2]]];
+TensorPermute[TensorPermute[t_, p1_], p2_, OptionsPattern[]] := TensorPermute[t, p1[[p2]]];
 ContractedPairs[TensorPermute[t_, perm_, OptionsPattern[]]] := ContractedPairs[t];
 TensorPermute[Contract[t_, pairs_], perm_, opt : OptionsPattern[]] := 
   Contract[
    TensorPermute[t, 
     If[OptionValue[TensorPermute, opt, "IncludeContracted"], perm, 
-     riffleIn[perm, Flatten@pairs]]], pairs];
+     riffleIn[perm, Flatten@pairs /. x_Integer :> InversePermutation[TensorPermutation[t]][[x]]]]], pairs];
 
 Tensor /: 
   TensorProduct[t1_Tensor, 
@@ -304,9 +305,7 @@ TensorSymmetries[TensorPermute[t_, perm_]] := TensorSymmetries[t] /. {
 
 
 SymmetryReduce[t_Tensor] := t;
-SymmetryReduce[Contract[t_Tensor, pairs_]] := Contract[t, pairs];
-SymmetryReduce[Contract[TensorPermute[t_, perm_], pairs_]] := 
-  Module[{ninds, generators, rules, allperms, minimal},
+SymmetryReduce[Contract[t_Tensor, pairs_]] := Module[{ninds, generators, rules, allperms, minimal},
    ninds = Total[Length /@ Symbolic[t] - 1];
    rules = Join[Rule @@@ pairs, Rule @@@ (Reverse /@ pairs)];
    generators = 
@@ -315,11 +314,31 @@ SymmetryReduce[Contract[TensorPermute[t_, perm_], pairs_]] :=
         AllTrue[Flatten[xs], MemberQ[Keys[rules], #] &] :> {Cycles[
          xs /. rules], sign}]];
    allperms = SymmetryPermutations[generators, "Minimal" -> False];
+   If[MemberQ[allperms, {Cycles[{}], -1}], 0,
+   minimal = 
+    MinimalBy[allperms, PermutationList[#[[1]], ninds] &][[1]];
+   minimal[[2]] Contract[
+     TensorPermute[t, PermutationList[minimal[[1]], ninds]], 
+     pairs]
+   ]
+   ];
+SymmetryReduce[Contract[TensorPermute[t_, perm_], pairs_]] := 
+  Module[{ninds, generators, rules, allperms, minimal},
+   ninds = Total[Length /@ Symbolic[t] - 1];
+   rules = Join[Rule @@@ pairs, Rule @@@ (Reverse /@ pairs)] /. x_Integer :> InversePermutation[perm][[x]];
+   generators = 
+    Join[TensorSymmetries[t], 
+     Cases[TensorSymmetries[t], {Cycles[xs_], sign_} /; 
+        AllTrue[Flatten[xs], MemberQ[Keys[rules], #] &] :> {Cycles[
+         xs /. rules], sign}]];
+   allperms = SymmetryPermutations[generators, "Minimal" -> False];
+   If[MemberQ[allperms, {Cycles[{}], -1}], 0,
    minimal = 
     MinimalBy[allperms, perm[[PermutationList[#[[1]], ninds]]] &][[1]];
    minimal[[2]] Contract[
      TensorPermute[t, perm[[PermutationList[minimal[[1]], ninds]]]], 
      pairs]
+   ]
    ];
 SymmetryReduce[TensorPermute[t_, perm_]] := 
   Module[{ninds, generators, allperms, minimal},
