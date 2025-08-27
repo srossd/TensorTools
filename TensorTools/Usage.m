@@ -31,13 +31,6 @@ Lowered::usage = "Lowered[\!\(\*
 StyleBox[\"indextype\",\nFontSlant->\"Italic\"]\)] represents a raised index of type \!\(\*
 StyleBox[\"indextype\",\nFontSlant->\"Italic\"]\).";
 
-DisplayName::usage = "DisplayName[\!\(\*
-StyleBox[\"indextype\",\nFontSlant->\"Italic\"]\), \!\(\*
-StyleBox[\"i\",\nFontSlant->\"Italic\"]\)] gives the displayed form of the \*
-StyleBox[\(\!\(\*
-StyleBox[\"i\",\nFontSlant->\"Italic\"]\)th\)] index of type \!\(\*
-StyleBox[\"indextype\",\nFontSlant->\"Italic\"]\).";
-
 Components::usage = "Components[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives the components of \!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\) as a SparseArray, with indices in the order they appear in the unpermuted form of tensor.";
@@ -54,9 +47,6 @@ StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives a list of the indices appe
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\).";
 TensorPermutation::usage = "TensorPermutation[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives the permutation of the indices appearing in \!\(\*
-StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\).";
-ContractedPairs::usage = "ContractedPairs[\!\(\*
-StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives a list of pairs of indices contracted in \!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\).";
 
 Tensor::usage = "Tensor[{{\!\(\*
@@ -222,7 +212,7 @@ DeclareCreator::usage = "DeclareCreator[\!\(\*
 StyleBox[\"name\",\nFontSlant->\"Italic\"]\)] declares that a tensor named \!\(\*
 StyleBox[\"name\",\nFontSlant->\"Italic\"]\) is a creator, and should be (anti)commuted to the left by NormalOrder.";
 
-Commutator::usage = "Commutator[\!\(\*
+TensorCommutator::usage = "TensorCommutator[\!\(\*
 StyleBox[\"tensor1\",\nFontSlant->\"Italic\"]\)\!\(\*
 StyleBox[\",\",\nFontSlant->\"Italic\"]\)\!\(\*
 StyleBox[\" \",\nFontSlant->\"Italic\"]\)\!\(\*
@@ -231,7 +221,7 @@ StyleBox[\"]\",\nFontSlant->\"Italic\"]\) can be set to the commutator of \!\(\*
 StyleBox[\"tensor1\",\nFontSlant->\"Italic\"]\)\!\(\*
 StyleBox[\" \",\nFontSlant->\"Italic\"]\)and \!\(\*
 StyleBox[\"tensor2\",\nFontSlant->\"Italic\"]\) to be used by NormalOrder.";
-Anticommutator::usage = "AntiCommutator[\!\(\*
+TensorAnticommutator::usage = "AntiTensorCommutator[\!\(\*
 StyleBox[\"tensor1\",\nFontSlant->\"Italic\"]\)\!\(\*
 StyleBox[\",\",\nFontSlant->\"Italic\"]\)\!\(\*
 StyleBox[\" \",\nFontSlant->\"Italic\"]\)\!\(\*
@@ -269,6 +259,12 @@ StyleBox[\"i\",\nFontSlant->\"Italic\"]\)] deletes the \*
 StyleBox[\(\!\(\*
 StyleBox[\"i\",\nFontSlant->\"Italic\"]\)th\)] factor from \!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\).";
+
+NCON::usage = "NCON[\!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] gives an NCON-style form of the contraction and permutation pattern of \!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)";
+FromNCON::usage = "FromNCON[\!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\)] converts an NCON-style form into a tensor expression";
 
 TensorInterpret::usage = "TensorInterpret[\!\(\*
 StyleBox[\"expr\",\nFontSlant->\"Italic\"]\)] interprets a convenient shorthand for tensor expressions"
