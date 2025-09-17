@@ -17,7 +17,7 @@ tensorFormat[t_] := Module[{ncon, inds, maxLowers, maxUppers},
    maxLowers = Max[#[[;;, 1]]] & /@ GroupBy[Select[inds, #[[1]] >= 1 && #[[2,0]] === Lowered &], #[[2,1]] &];
    Row[Replace[
       ncon 
-      	/. {i_Integer, indtype_} /; i < 0 :> {((maxLowers[indtype[[1]]] + maxUppers[indtype[[1]]]) /. _?MissingQ -> 0) - i, indtype, 0}
+      	/. {i_Integer, indtype : (_Lowered | _Raised)} /; i < 0 :> {((maxLowers[indtype[[1]]] + maxUppers[indtype[[1]]]) /. _?MissingQ -> 0) - i, indtype, 0}
       	/. {i_Integer, indtype_Raised} :> {(maxLowers[indtype[[1]]] /. _?MissingQ -> 0) + i, indtype},
       {h_, inds_} :> Fold[
          If[#2[[2,0]] === Raised, Superscript, Subscript][#1, If[Length[#2] == 3, Function[x, Style[x, Gray]], Identity] @ DisplayName[#2[[2,1]], #2[[1]]]] &,
