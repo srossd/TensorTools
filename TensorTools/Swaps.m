@@ -27,7 +27,7 @@ SwapIn[t_, {mini_, maxi_}, replacement_] := Module[{ncon, ncon2, grps, grps2, ru
      
   	 rules = Join @@ Table[Thread[grps2[k] -> grps[k]], {k, Keys[grps]}];
   
-  	FromNCON[Join[ncon[[;;mini - 1]], ncon2 /. rules /. {i_Integer, ind_} /; i < 0 :> {maxneg + i, ind}, ncon[[maxi + 1;;]]]]
+  	FromNCON[Join[ncon[[;;mini - 1]], ncon2 /. {i_Integer, ind_} /; i < 0 :> {maxneg + i, ind} /. rules, ncon[[maxi + 1;;]]]]
   ]
 ];
 

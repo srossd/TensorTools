@@ -16,11 +16,13 @@ Indices[Tensor[names_]] := Join @@ (Rest /@ names);
 
 Symbolic[TensorPermute[t_, _]] := Symbolic[t];
 Indices[TensorPermute[t_, perm_]] := Indices[t][[InversePermutation@perm]];
+TensorPermute[0, _] := 0;
 TensorPermute[a_ t_, perm_] /; FreeQ[a, Alternatives @@ $TensorHeads] := a TensorPermute[t, perm]; 
 TensorPermute[a_ + b_, perm_] := TensorPermute[a, perm] + TensorPermute[b, perm];
 
 Symbolic[Contract[t_, _]] := Symbolic[t];
 Indices[Contract[t_, pairs_]] := Delete[Indices[t], List /@ Flatten[pairs]];
+Contract[0, _] := 0;
 Contract[a_ t_, pairs_] /; FreeQ[a, Alternatives @@ $TensorHeads] := a Contract[t, pairs]; 
 Contract[a_ + b_, pairs_] := Contract[a, pairs] + Contract[b, pairs];
 
