@@ -23,8 +23,10 @@ Components[t_] :=
    	/. TensorProduct -> TP 
    	//. Inactive[TP][x__, y_, z___] | Inactive[TP][x___, y_, z__] 
    		/; ! ArrayQ[y] && !ListQ[y] && FreeQ[y, Alternatives @@ $TensorHeads] 
-   		:> Inactive[Times][y, TP[x, z]] 
+   		:> Inactive[Times][y, Inactive[TP][x, z]] 
+    /. Inactive[TP][x_] :> x
    	/. TP -> Inactive[TensorProduct] 
+   	/. Inactive[TensorProduct][x_] :> x
  ]
  
 If[Head[explicitRules] === Symbol, explicitRules = {}];
