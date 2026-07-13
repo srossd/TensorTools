@@ -116,7 +116,12 @@ TensorPermute::usage = "TensorPermute[\!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\), \!\(\*
 StyleBox[\"permutation\",\nFontSlant->\"Italic\"]\)] represents \!\(\*
 StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\) with its indices ordered as in \!\(\*
-StyleBox[\"permutation\",\nFontSlant->\"Italic\"]\).";
+StyleBox[\"permutation\",\nFontSlant->\"Italic\"]\). Slot \!\(\*
+StyleBox[\"k\",\nFontSlant->\"Italic\"]\) of \!\(\*
+StyleBox[\"tensor\",\nFontSlant->\"Italic\"]\) becomes slot \!\(\*
+StyleBox[\"permutation\",\nFontSlant->\"Italic\"]\)[[\!\(\*
+StyleBox[\"k\",\nFontSlant->\"Italic\"]\)]] of the result. Only indices of the same type may be permuted with one another: \!\(\*
+StyleBox[\"permutation\",\nFontSlant->\"Italic\"]\) must leave the list of indices unchanged, exchanging only slots that carry the same index type in the same (raised or lowered) position. Permuting an index into a slot of a different type is not supported and gives TensorPermute::indextype.";
 
 CanonicallyOrderedComponents::usage = "CanonicallyOrderedComponents[\!\(\*
 StyleBox[\"expr\",\nFontSlant->\"Italic\"]\)] gives the components of the tensor expression \!\(\*

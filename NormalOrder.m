@@ -8,15 +8,27 @@ DeclareCreator[name_String] := If[!MemberQ[$Creators, name], AppendTo[$Creators,
 
 TensorCommutator::incommensurate = "The commutator `1` is incommensurate with [`2`, `3`]";
 TensorAnticommutator::incommensurate = "The anticommutator `1` is incommensurate with {`2`, `3`}";
+
+(* A (anti)commutator is commensurate with the pair it is assigned to when it
+   carries the same indices. A vanishing (anti)commutator is always allowed, and
+   a sum is allowed when every term carries those indices -- Indices[] does not
+   thread over Plus, so the terms have to be checked one by one, as
+   CanonicallyOrderedComponents does. *)
+commensurateQ[inds_, rhs_] := rhs === 0 ||
+	AllTrue[If[Head[rhs] === Plus, List @@ rhs, {rhs}], Sort[Indices[#]] === inds &];
+
+(* The $vg... guard makes the inner assignment below fall through to an ordinary
+   Set instead of re-entering this rule. It must therefore be *unset* for the
+   rule to fire, exactly as for IndexData in TensorTools.m. *)
 Unprotect[Set];
-Set[TensorCommutator[t1_, t2_], t3_] /; TrueQ[$vgTensorCommutator] := Block[{$vgTensorCommutator = True}, 
-	If[Sort[Join[Indices[t1], Indices[t2]]] === Sort[Indices[t3]],
+Set[TensorCommutator[t1_, t2_], t3_] /; !TrueQ[$vgTensorCommutator] := Block[{$vgTensorCommutator = True},
+	If[commensurateQ[Sort[Join[Indices[t1], Indices[t2]]], t3],
 		TensorCommutator[t1, t2] = t3,
 		Message[TensorCommutator::incommensurate, TraditionalForm[t3], TraditionalForm[t1], TraditionalForm[t2]]
 	]
 ];
-Set[TensorAnticommutator[t1_, t2_], t3_] /; TrueQ[$vgTensorAnticommutator] := Block[{$vgTensorAnticommutator = True}, 
-	If[Sort[Join[Indices[t1], Indices[t2]]] === Sort[Indices[t3]],
+Set[TensorAnticommutator[t1_, t2_], t3_] /; !TrueQ[$vgTensorAnticommutator] := Block[{$vgTensorAnticommutator = True},
+	If[commensurateQ[Sort[Join[Indices[t1], Indices[t2]]], t3],
 		TensorAnticommutator[t1, t2] = t3,
 		Message[TensorAnticommutator::incommensurate, TraditionalForm[t3], TraditionalForm[t1], TraditionalForm[t2]]
 	]
