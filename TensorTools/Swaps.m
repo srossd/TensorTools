@@ -9,6 +9,8 @@ SwapFactors[t_Tensor | t_TensorPermute | t_Contract, perm_] := Module[{ncon},
    FromNCON[ncon[[PermutationList[perm, Length[ncon]]]]]
 ];
 
+SwapIn[a_ + b_, rest__] := SwapIn[a, rest] + SwapIn[b, rest];
+
 SwapIn[t_, {mini_, maxi_}, 0] := 0;
 SwapIn[t_, {mini_, maxi_}, a_ b_] /; FreeQ[a, Alternatives @@ $TensorHeads] := a SwapIn[t, {mini, maxi}, b];
 SwapIn[a_ t_, {mini_, maxi_}, b_] /; FreeQ[a, Alternatives @@ $TensorHeads] := a SwapIn[t, {mini, maxi}, b];

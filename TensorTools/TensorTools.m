@@ -17,8 +17,22 @@ Indices[Tensor[names_]] := Join @@ (Rest /@ names);
 Symbolic[TensorPermute[t_, _]] := Symbolic[t];
 Indices[TensorPermute[t_, perm_]] := Indices[t][[InversePermutation@perm]];
 TensorPermute[0, _] := 0;
-TensorPermute[a_ t_, perm_] /; FreeQ[a, Alternatives @@ $TensorHeads] := a TensorPermute[t, perm]; 
+TensorPermute[a_ t_, perm_] /; FreeQ[a, Alternatives @@ $TensorHeads] := a TensorPermute[t, perm];
 TensorPermute[a_ + b_, perm_] := TensorPermute[a, perm] + TensorPermute[b, perm];
+
+(* Only indices of the same type may be permuted with one another, i.e. the
+   permutation must leave the index list unchanged.  Everything downstream of a
+   TensorPermute -- the NCON form, and so Contract, SwapFactors and SwapIn --
+   identifies an index by its type, and rebuilds each factor's index types from
+   the permuted slots; moving an index into a slot of a different type therefore
+   silently rebuilds the factors with the wrong signature.  Warn, but still
+   return the expression: its Components are well defined (TensorTranspose does
+   not care), and the caller may only ever ask for those. *)
+TensorPermute::indextype = "The permutation `1` moves an index of `2` into a slot of a different type. TensorPermute can only permute indices of the same type, in the same raised or lowered position; the result will not be handled correctly by Contract, SwapFactors or NCON.";
+TensorPermute[t_, perm_List] /; With[{inds = Indices[t]},
+   ListQ[inds] && Length[inds] === Length[perm]
+      && inds[[InversePermutation[perm]]] =!= inds
+      && (Message[TensorPermute::indextype, perm, TraditionalForm[t]]; False)] := Null;
 
 Symbolic[Contract[t_, _]] := Symbolic[t];
 Indices[Contract[t_, pairs_]] := Delete[Indices[t], List /@ Flatten[pairs]];
@@ -61,7 +75,7 @@ TensorPermute /: TensorProduct[TensorPermute[t1_, perm1_], TensorPermute[t2_, pe
 Contract[t_, {}] := t;
 TensorPermute[t_, perm_List] := t /; OrderedQ[perm];
 Contract[Contract[t_, pairs1_], pairs2_] := Contract[t, Join[pairs1, pairs2 /. n_Integer :> n + shift[n, Flatten[pairs1]]]];
-TensorPermute[TensorPermute[t_, p1_], p2_] := TensorPermute[t, p1[[p2]]];
+TensorPermute[TensorPermute[t_, p1_], p2_] := TensorPermute[t, p2[[p1]]];
 Contract[TensorPermute[t_, perm_], pairs_] := FromNCON[NCON[Contract[TensorPermute[t, perm], pairs]]];
 
 TensorPermutation[t_Tensor] := Range@Length[Indices[t]];
@@ -71,4 +85,4 @@ TensorPermutation[TP[t : Except[_TP]]] := TensorPermutation[t];
 TensorPermutation[TensorProduct[t1_, t2__]] := Join[TensorPermutation[t1], TensorPermutation[TensorProduct[t2]] + Length[TensorPermutation[t1]]];
 TensorPermutation[TP[t1_, t2__]] := Join[TensorPermutation[t1], TensorPermutation[TP[t2]] + Length[TensorPermutation[t1]]];
 TensorPermutation[Contract[t_, pairs_]] := DeleteCases[TensorPermutation[t], Alternatives @@ Flatten[pairs]] /. n_Integer :> n - Length@Select[Flatten[pairs], # <= n &];
-TensorPermutation[TensorPermute[t_, perm_]] := TensorPermutation[t][[perm]];
+TensorPermutation[TensorPermute[t_, perm_]] := perm[[TensorPermutation[t]]];
